@@ -1,0 +1,1021 @@
+# NAME ........: DIR_COLORS
+# AUTHOR ......: José Lopes de Oliveira Júnior
+# DESCRIPTION .: Color schema for the ls utility.
+# OBSERVATION .: This file goes in the /etc directory, and must be world
+#    readable (give it 644 permition). You can copy this file to .dir_colors in
+#    your $HOME directory to override the system defaults.
+#===============================================================================
+ 
+# TERM terminal-type
+# Starts a terminal-specific section and specifies which terminal it applies to.
+#    Multiple TERM statements can be used to create a section which applies for
+#    several terminal types.
+TERM      linux
+TERM      linux-c
+TERM      console
+TERM      con132x25
+TERM      con132x30
+TERM      con132x43
+TERM      con132x60
+TERM      con80x25
+TERM      con80x28
+TERM      con80x30
+TERM      con80x43
+TERM      con80x50
+TERM      con80x60
+TERM      Eterm
+TERM      gnome
+TERM      rxvt
+TERM      screen
+TERM      screen-w
+TERM      xterm
+TERM      vt100
+TERM      vt102
+ 
+# ISO 6429 (ANSI) COLOR SEQUENCES
+# Most color-capable ASCII terminals today use ISO 6429 (ANSI) color sequences,
+#    and many common terminals without color capability, including xterm and the
+#    widely used and cloned DEC VT100, will recognize ISO 6429 color codes and
+#    harmlessly eliminate them from the output or emulate them. ls uses ISO 6429
+#    codes by default, assuming colorization is enabled.
+# ISO 6429 color sequences are composed of sequences of numbers separated by
+#    semicolons. The most common codes are (not all commands will work on all
+#    systems or display devices):
+# COLOR      RESULT
+# 00      restore default color
+# 01      brighter colors
+# 04      underlined text
+# 05      flashing text
+# 30      black foreground
+# 31      red foreground
+# 32      green foreground
+# 33      yellow (or brown) foreground
+# 34      blue foreground
+# 35      purple foreground
+# 36      cyan foreground
+# 37      white (or gray) foreground
+# 40      black background
+# 41      red background
+# 42      green background
+# 43      yellow (or brown) background
+# 44      blue background
+# 45      purple background
+# 46      cyan background
+# 47      white (or gray) background
+ 
+# NORMAL color-sequence
+# Specifies the color used for normal (non-filename) text.
+# ls default: NORMAL 0
+NORMAL      00
+ 
+# FILE color-sequence
+# Specifies the color used for a regular file.
+# ls default: FILE 0
+FILE      00
+ 
+# DIR color-sequence
+# Specifies the color used for directories.
+# ls default: DIR 32
+DIR      34;01
+ 
+# LINK color-sequence
+# Specifies the color used for a symbolic link.
+# ls default: LINK 36
+LINK      36;01
+ 
+# ORPHAN color-sequence
+# Specifies the color used for an orphaned symbolic link (one which points to a
+#    nonexistent file). If this is unspecified, ls will use the LINK color
+#    instead.
+# ls default: ORPHAN undefined
+ORPHAN      31;05
+ 
+# MISSING color-sequence
+# Specifies the color used for a missing file (a nonexistent file which
+#    nevertheless has a symbolic link pointing to it). If this is unspecified,
+#    ls will use the FILE color instead.
+# ls default: MISSING undefined
+MISSING      33;05
+ 
+# FIFO color-sequence
+# Specifies the color used for a FIFO (named pipe).
+# ls default: FIFO 31
+FIFO      35
+ 
+# SOCK color-sequence
+# Specifies the color used for a socket.
+# ls default: SOCK 33
+SOCK      35
+ 
+# BLK color-sequence
+# Specifies the color used for a block device special file.
+# ls default: BLK 44;37
+BLK      33
+ 
+# CHR color-sequence
+# Specifies the color used for a character device special file.
+# ls default: CHR 44;37
+CHR      33
+ 
+# EXEC color-sequence
+# Specifies the color used for a file with the executable attribute set.
+# ls default: EXEC 35
+EXEC      32;01
+ 
+# .extension color-sequence
+# Specifies the color used for any file that ends in .extension.
+# Note that the period is included in the extension, which makes it impossible
+#    to specify an extension not starting with a period, such as ~ for emacs
+#    backup files. This form should be considered obsolete.
+# For more informations about file extensions, visit <http://filext.com/>.
+# LEGEND:
+#    BINARY FILES: 32
+#        Compiled, library, font and database files.
+#    DOCUMENT FILES: 37;01
+#        Text files, spreadsheets, source-codes, scripts, confs and etc.
+#    COMPRESSED FILES: 31;01
+#        Compressed files and instalation packages.
+#    MULTIMEDIA FILES: 35;01
+#        Image, music and video files.
+#    BACKUP FILES: 33;01
+#        Backup from other files, temporary files and log files.
+ 
+# NUMBERS ----------------------------------------------------------------------
+.386            32
+.586            37;01
+.686            37;01
+.8              37;01
+ 
+# SYMBOLS ----------------------------------------------------------------------
+.###      33;01
+.$$$      33;01
+.&&&      33;01
+*~      33;01
+.~$~      33;01
+.~~~      33;01
+ 
+# A ----------------------------------------------------------------------------
+.a      37;01
+.A      37;01
+.abs      35;01
+.ABS      35;01
+.ari      31;01
+.ARI      31;01
+.arj      31;01
+.ARJ      31;01
+.arq      31;01
+.ARQ      31;01
+.asp      37;01
+.ASP      37;01
+.avi      31;01
+.AVI      31;01
+.awk      37;01
+.AWK      37;01
+ 
+# B ----------------------------------------------------------------------------
+.b      37;01
+.B      37;01
+.bak      33;01
+.BAK      33;01
+.bas      37;01
+.BAS      37;01
+.bat      37;01
+.BAT      37;01
+.bck      33;01
+.BCK      33;01
+.bi      32
+.BI      32
+.bin      32
+.BIN      32
+.bit      35;01
+.BIT      35;01
+.bk      33;01
+.BK      33;01
+.bk!      33;01
+.BK!      33;01
+.bk$      33;01
+.BK$      33;01
+.bkp      33;01
+.BKP      33;01
+.bmp      35;01
+.BMP      35;01
+.boo      31;01
+.BOO      31;01
+.bz      31;01
+.BZ      31;01
+.bz2      31;01
+.BZ2      31;01
+ 
+# C ----------------------------------------------------------------------------
+.c      37;01
+.C      37;01
+.c#=      37;01
+.C#=      37;01
+.c++      37;01
+.C++      37;01
+.c--      37;01
+.C--      37;01
+.cab      31;01
+.CAB      31;01
+.cc      37;01
+.CC      37;01
+.cdr      35;01
+.CDR      35;01
+.cfg      37;01
+.CFG      37;01
+.cgi      37;01
+.CGI      37;01
+.chh      37;01
+.CHH      37;01
+.class      32
+.CLASS      32
+.cmd      37;01
+.CMD      37;01
+.com      32
+.COM      32
+.conf      37;01
+.CONF      37;01
+.cpp      37;01
+.CPP      37;01
+.cpy      37;01
+.CPY      37;01
+.crt      37;01
+.CRT      37;01
+.csh      37;01
+.CSH      37;01
+.css      37;01
+.CSS      37;01
+.cvs      35;01
+.CVS      35;01
+ 
+# D ----------------------------------------------------------------------------
+.d      37;01
+.D      37;01
+.dac      35;01
+.DAC      35;01
+.dat      32
+.DAT      32
+.db      32
+.DB      32
+.dbf      32
+.DBF      32
+.dbg      32
+.DBG      32
+.dcd      32
+.DCD      32
+.ddt      37;01
+.DDT      37;01
+.deb      31;01
+.DEB      31;01
+.debian      37;01
+.DEBIAN      37;01
+.dll      32
+.DLL      32
+.dmp      32
+.DMP      32
+.doc      37;01
+.DOC      37;01
+.dov      33;01
+.DOV      33;01
+.dox      37;01
+.DOX      37;01
+.dt      37;01
+.DT      37;01
+.dvi      37;01
+.DVI      37;01
+.dwc      31;01
+.DWC      31;01
+.dxb      32
+.DXB      32
+ 
+# E ----------------------------------------------------------------------------
+.elf      32
+.ELF      32
+.emu      32
+.EMU      32
+.etf      37;01
+.ETF      37;01
+.exe      32
+.EXE      32
+ 
+# F ----------------------------------------------------------------------------
+.f      37;01
+.F      37;01
+.f77      37;01
+.F77      37;01
+.f90      37;01
+.F90      37;01
+.fb      33;01
+.FB      33;01
+.fdb      32
+.FDB      32
+.fig      35;01
+.FIG      35;01
+.flc      35;01
+.FLC      35;01
+.fli      35;01
+.FLI      35;01
+.flv      35;01
+.FLV      35;01
+.fmx      32
+.FMX      32
+.fphtml      37;01
+.FPHTML      37;01
+.ftn      37;01
+.FTN      37;01
+ 
+# G ----------------------------------------------------------------------------
+.g4      32
+.G4      32
+.gb      32
+.GB      32
+.gba      32
+.GBA      32
+.gbk      33;01
+.GBK      33;01
+.gbr      35;01
+.GBR      35;01
+.gbt      35;01
+.GBT      35;01
+.gcc      37;01
+.GCC      37;01
+.gdb      32
+.GDB      32
+.gds      35;01
+.GDS      35;01
+.grr      35;01
+.GRR      35;01
+.gif      35;01
+.GIF      35;01
+.giff      35;01
+.GIFF      35;01
+.gih      35;01
+.GIH      35;01
+.gz      31;01
+.GZ      31;01
+.gzip      31;01
+.GZIP      31;01
+ 
+# H ----------------------------------------------------------------------------
+.h      37;01
+.H      37;01
+.h++      37;01
+.H++      37;01
+.h--      37;01
+.H--      37;01
+.hdm      37;01
+.HDM      37;01
+.hdml      37;01
+.HDML      37;01
+.hh      37;01
+.HH      37;01
+.hpp      37;01
+.HPP      37;01
+.hs      37;01
+.HS      37;01
+.hst      37;01
+.HST      37;01
+.ht3      37;01
+.HT3      37;01
+.htm      37;01
+.HTM      37;01
+.html      37;01
+.HTML      37;01
+.hxx      37;01
+.HXX      37;01
+ 
+# I ----------------------------------------------------------------------------
+.ico      35;01
+.ICO      35;01
+.idb      32
+.IDB      32
+.ida      37;01
+.IDA      37;01
+.ief      35;01
+.IEF      35;01
+.ii      32
+.II      32
+.ijx      37;01
+.IJX      37;01
+.il      37;01
+.IL      37;01
+.ima      35;01
+.IMA      35;01
+.imf      35;01
+.IMF      35;01
+.inf      37;01
+.INF      37;01
+.inp      37;01
+.INP      37;01
+.ish      31;01
+.ISH      31;01
+.iso      31;01
+.ISO      31;01
+ 
+# J ----------------------------------------------------------------------------
+.j2k      35;01
+.J2K      35;01
+.jar      31;01
+.JAR      31;01
+.jav      37;01
+.JAV      37;01
+.java      37;01
+.JAVA      37;01
+.jfi      35;01
+.JFI      35;01
+.jfif      35;01
+.JFIF      35;01
+.jif      35;01
+.JIF      35;01
+.jj      37;01
+.JJ      37;01
+.jng      35;01
+.JNG      35;01
+.jp2      35;01
+.JP2      35;01
+.jpe      35;01
+.JPE      35;01
+.jpeg      35;01
+.JPEG      35;01
+.jpg      35;01
+.JPG      35;01
+.jpg_t      35;01
+.JPG_T      35;01
+.jpx      35;01
+.JPX      35;01
+.jsp      37;01
+.JSP      37;01
+.jsp10      37;01
+.JSP10      37;01
+.jspf      37;01
+.JSPF      37;01
+.jss      37;01
+.JSS      37;01
+.jtf      35;01
+.JTF      35;01
+.jtif      35;01
+.JTIF      35;01
+.jxx      37;01
+.JXX      37;01
+ 
+# K ----------------------------------------------------------------------------
+.ko      32
+.KO      32
+.kpl      37;01
+.KPL      37;01
+.ksh      37;01
+.KSH      37;01
+.kshrc      37;01
+.KSHRC      37;01
+ 
+# L ----------------------------------------------------------------------------
+.l      37;01
+.L      37;01
+.la      32
+.LA      32
+.lat      37;01
+.LAT      37;01
+.latex      37;01
+.LATEX      37;01
+.lha      31;01
+.LHA      31;01
+.lhz      31;01
+.LHZ      31;01
+.lif      31;01
+.LIF      31;01
+.log      33;01
+.LOG      33;01
+.logo      37;01
+.LOGO      37;01
+.ltx      37;01
+.LTX      37;01
+.lyr      37;01
+.LYR      37;01
+.lyx      37;01
+.LYX      37;01
+.lzh      31;01
+.LZH      31;01
+.lzx      31;01
+.LZX      31;01
+ 
+# M ----------------------------------------------------------------------------
+.m      37;01
+.M      37;01
+.m1a      35;01
+.M1A      35;01
+.m1s      35;01
+.M1S      35;01
+.m1v      35;01
+.M1V      35;01
+.m2      37;01
+.M2      37;01
+.m2a      35;01
+.M2A      35;01
+.m2s      35;01
+.M2S      35;01
+.m2v      35;01
+.M2V      35;01
+.m3      37;01
+.M3      37;01
+.m32      35;01
+.M32      35;01
+.m3a      35;01
+.M3A      35;01
+.m3u      37;01
+.M3U      37;01
+.m3url      37;01
+.M3URL      37;01
+.m4      37;01
+.M4      37;01
+.m4a      35;01
+.M4A      35;01
+.m4v      35;01
+.M4V      35;01
+.m75      35;01
+.M75      35;01
+.mak      37;01
+.MAK      37;01
+.make      37;01
+.MAKE      37;01
+.makefile   37;01
+.MAKEFILE   37;01
+.man      37;01
+.MAN      37;01
+.manx      37;01
+.MANX      37;01
+.max      37;01
+.MAX      37;01
+.mbi      37;01
+.MBI      37;01
+.md5      37;01
+.MD5      37;01
+.mdb      32
+.MDB      32
+.mdi      35;01
+.MDI      35;01
+.mff      35;01
+.MFF      35;01
+.mgf      35;01
+.MGF      35;01
+.mid      35;01
+.MID      35;01
+.midi      35;01
+.MIDI      35;01
+.mjpg      35;01
+.MJPG      35;01
+.mk      37;01
+.MK      37;01
+.mke      37;01
+.MKE      37;01
+.mkg      37;01
+.MKG      37;01
+.mki      35;01
+.MKI      35;01
+.moov      35;01
+.MOOV      35;01
+.mov      35;01
+.MOV      35;01
+.mp+      35;01
+.MP+      35;01
+.mp1      35;01
+.MP1      35;01
+.mp2      35;01
+.MP2      35;01
+.mp2s      35;01
+.MP2S      35;01
+.mp2v      35;01
+.MP2V      35;01
+.mp3      35;01
+.MP3      35;01
+.mp3pro      35;01
+.MP3PRO      35;01
+.mp4      35;01
+.MP4      35;01
+.mp4v      35;01
+.MP4V      35;01
+.mpa      35;01
+.MPA      35;01
+.mpe      35;01
+.MPE      35;01
+.mpeg      35;01
+.MPEG      35;01
+.mpg      35;01
+.MPG      35;01
+.mpg4      35;01
+.MPG4      35;01
+.mpm      35;01
+.MPM      35;01
+.mps      35;01
+.MPS      35;01
+.mrc      37;01
+.MRC      37;01
+.msc      37;01
+.MSC      37;01
+.msq      35;01
+.MSQ      35;01
+.msx      35;01
+.MSX      35;01
+.myd      32
+.MYD      32
+ 
+# N ----------------------------------------------------------------------------
+.nds      32
+.NDS      32
+.nes      32
+.NES      32
+.net      37;01
+.NET      37;01
+.nez      32
+.NEZ      32
+.nfc      37;01
+.NFC      37;01
+.nfo      37;01
+.NFO      37;01
+.ngp      32
+.NGP      32
+.nif      37;01
+.NIF      37;01
+ 
+# O ----------------------------------------------------------------------------
+.o      32
+.O      32
+.obj      32
+.OBJ      32
+.obd      37;01
+.OBD      37;01
+.odc      37;01
+.ODC      37;01
+.odf      37;01
+.ODF      37;01
+.odg      35;01
+.ODG      35;01
+.odi      35;01
+.ODI      35;01
+.odm      37;01
+.ODM      37;01
+.odp      37;01
+.ODP      37;01
+.ods      37;01
+.ODS      37;01
+.odt      37;01
+.ODT      37;01
+.ogg      35;01
+.OGG      35;01
+.ogm      35;01
+.OGM      35;01
+.ognc      37;01
+.OGNC      37;01
+.old      33;01
+.OLD      33;01
+.oma      35;01
+.OMA      35;01
+.oms      35;01
+.OMS      35;01
+.opl      35;01
+.OPL      35;01
+.opx      32
+.OPX      32
+.ovl      32
+.OVL      32
+ 
+# P ----------------------------------------------------------------------------
+.p      37;01
+.P      37;01
+.pas      37;01
+.PAS      37;01
+.pbf      35;01
+.PBF      35;01
+.pbm      35;01
+.PBM      35;01
+.pc      37;01
+.PC      37;01
+.pcc      35;01
+.PCC      35;01
+.pcx      35;01
+.PCX      35;01
+.pcds      31;01
+.PCDS      31;01
+.pcf      32
+.PCF      32
+.pdf      37;01
+.PDF      37;01
+.pe      32
+.PE      32
+.perl      37;01
+.PERL      37;01
+.pgm      35;01
+.PGM      35;01
+.ph      37;01
+.PH      37;01
+.ph3      37;01
+.PH3      37;01
+.ph4      37;01
+.PH4      37;01
+.phl      37;01
+.PHL      37;01
+.php      37;01
+.PHP      37;01
+.php3      37;01
+.PHP3      37;01
+.php4      37;01
+.PHP4      37;01
+.php5      37;01
+.PHP5      37;01
+.phps      37;01
+.PHPS      37;01
+.phtm      37;01
+.PHTM      37;01
+.phtml      37;01
+.PHTML      37;01
+.pic      35;01
+.PIC      35;01
+.pix      35;01
+.PIX      35;01
+.pjp      35;01
+.PJP      35;01
+.pjpeg      35;01
+.PJPEG      35;01
+.pk      31;01
+.PK      31;01
+.pl      37;01
+.PL      37;01
+.plx      37;01
+.PLX      37;01
+.png      35;01
+.PNG      35;01
+.po      37;01
+.PO      37;01
+.pp      37;01
+.PP      37;01
+.ppt      37;01
+.PPT      37;01
+.pphtml      37;01
+.PPHTML      37;01
+.prl      37;01
+.PRL      37;01
+.prn      37;01
+.PRN      37;01
+.psd      35;01
+.PSD      35;01
+.py      37;01
+.PY      37;01
+ 
+# Q ----------------------------------------------------------------------------
+ 
+# R ----------------------------------------------------------------------------
+.rar      31;01
+.RAR      31;01
+.rbf      33;01
+.RBF      33;01
+.rbn      35;01
+.RBN      35;01
+.rm      35;01
+.RM      35;01
+.rmi      35;01
+.RMI      35;01
+.rom      32
+.ROM      32
+.rpm      31;01
+.RPM      31;01
+.rss      37;01
+.RSS      37;01
+.rtf      37;01
+.RTF      37;01
+.rv      35;01
+.RV      35;01
+ 
+# S ----------------------------------------------------------------------------
+.s      37;01
+.S      37;01
+.sav      35;01
+.SAV      35;01
+.sda      37;01
+.SDA      37;01
+.sdc      37;01
+.SDC      37;01
+.sdd      37;01
+.SDD      37;01
+.sdg      37;01
+.SDG      37;01
+.sdm      37;01
+.SDM      37;01
+.sdp      37;01
+.SDP      37;01
+.sdw      37;01
+.SDW      37;01
+.sed      37;01
+.SED      37;01
+.sfs      37;01
+.SFS      37;01
+.sfx      32
+.SFX      32
+.sgf      37;01
+.SGF      37;01
+.sgl      37;01
+.SGL      37;01
+.sh      37;01
+.SH      37;01
+.shz      35;01
+.SHZ      35;01
+.smc      32
+.SMC      32
+.smd      32
+.SMD      32
+.smf      37;01
+.SMF      37;01
+.sms      32
+.SMS      32
+.snes      32
+.SNES      32
+.snf      32
+.SNF      32
+.so      32
+.SO      32
+.sqz      31;01
+.SQZ      31;01
+.srm      33;01
+.SRM      33;01
+.shtml      37;01
+.SHTML      37;01
+.sty      37;01
+.STY      37;01
+.style      37;01
+.STYLE      37;01
+.svg      35;01
+.SVG      35;01
+.swp      32
+.SWP      32
+.sxc      37;01
+.SXC      37;01
+.sxd      37;01
+.SXD      37;01
+.sxg      37;01
+.SXG      37;01
+.sxm      37;01
+.SXM      37;01
+.sxp      37;01
+.SXP      37;01
+.sxw      37;01
+.SXW      37;01
+.sys      37;01
+.SYS      37;01
+.sz0      32
+.SZ0      32
+ 
+# T ----------------------------------------------------------------------------
+.t1      32
+.T1      32
+.t2      32
+.T2      32
+.t3      32
+.T3      32
+.tar      31;01
+.TAR      31;01
+.targa      35;01
+.TARGA      35;01
+.taz      31;01
+.TAZ      31;01
+.tbz      31;01
+.TBZ      31;01
+.tcl      37;01
+.TCL      37;01
+.tcsh      37;01
+.TCSH      37;01
+.tex      37;01
+.TEX      37;01
+.tga      35;01
+.TGA      35;01
+.tgz      31;01
+.TGZ      31;01
+.tif      35;01
+.TIF      35;01
+.tiff      35;01
+.TIFF      35;01
+.tk      37;01
+.TK      37;01
+.tmp      33;01
+.TMP      33;01
+.tpl      32
+.TPL      32
+.tpp      32
+.TPP      32
+.tpz      31;01
+.TPZ      31;01
+.tt      32
+.TT      32
+.ttc      31;01
+.TTC      31;01
+.ttf      32
+.TTF      32
+.ttr      32
+.TTR      32
+.txt      37;01
+.TXT      37;01
+.tz      31;01
+.TZ      31;01
+.tzb      31;01
+.TZB      31;01
+.tzip      31;01
+.TZIP      31;01
+ 
+# U ----------------------------------------------------------------------------
+.uu      31;01
+.UU      31;01
+ 
+# V ----------------------------------------------------------------------------
+.vcd      35;01
+.VCD      35;01
+.ver      37;01
+.VER      37;01
+.vga      35;01
+.VGA      35;01
+.vjs      35;01
+.VJS      35;01
+.vm      32
+.VM      32
+.vmc      37;01
+.VMC      37;01
+ 
+# W ----------------------------------------------------------------------------
+.wav      35;01
+.WAV      35;01
+.wave      35;01
+.WAVE      35;01
+.win      33;01
+.WIN      33;01
+.wma      35;01
+.WMA      35;01
+.wmp      35;01
+.WMP      35;01
+.wmv      35;01
+.WMV      35;01
+ 
+# X ----------------------------------------------------------------------------
+.xbm      35;01
+.XBM      35;01
+.xcf      35;01
+.XCF      35;01
+.xfi      37;01
+.XFI      37;01
+.xhdml      37;01
+.XHDML      37;01
+.xht      37;01
+.XHT      37;01
+.xhtm      37;01
+.XHTM      37;01
+.xhtml      37;01
+.XHTML      37;01
+.xif      35;01
+.XIF      35;01
+.xjt      31;01
+.XJT      31;01
+.xjtgz      31;01
+.XJTGZ      31;01
+.xjtz2      31;01
+.XJTZ2      31;01
+.xla      32
+.XLA      32
+.xlb      37;01
+.XLB      37;01
+.xlc      37;01
+.XLC      37;01
+.xld      37;01
+.XLD      37;01
+.xlk      33;01
+.XLK      33;01
+.xll      37;01
+.XLL      37;01
+.xlm      37;01
+.XLM      37;01
+.xls      37;01
+.XLS      37;01
+.xlshtml   37;01
+.XLSHTML   37;01
+.xlsmhtml   37;01
+.XLSMHTML   37;01
+.xlsx      37;01
+.XLSX      37;01
+.xlxml      37;01
+.XLXML      37;01
+.xmf      35;01
+.XMF      35;01
+.xml      37;01
+.XML      37;01
+.xpm      35;01
+.XPM      35;01
+ 
+# Y ----------------------------------------------------------------------------
+ 
+# Z ----------------------------------------------------------------------------
+.z      31;01
+.Z      31;01
+.zfs      37;01
+.ZFS      37;01
+.zip      31;01
+.ZIP      31;01
+.zoo      31;01
+.ZOO      31;01
+.zsh      37;01
+.ZSH      37;01
+ 
+# EOF
