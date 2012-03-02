@@ -1,4 +1,5 @@
-# /etc/bash.bashrc
+# Archlinux Ultimate Install - .bashrc
+# by helmuthdu
 ## OVERALL CONDITIONALS {{{
 _islinux=false
 [[ "$(uname -s)" =~ Linux|GNU|GNU/* ]] && _islinux=true
