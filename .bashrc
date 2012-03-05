@@ -62,19 +62,6 @@ _isroot=false
     export PATH=/usr/local/bin:$PATH
     export EDITOR='vim'
     export VISUAL='vim'
-    ## MODIFIED COMMANDS #{{{
-        alias ..='cd ..'
-        alias df='df -h'
-        alias diff='colordiff'              # requires colordiff package
-        alias du='du -c -h'
-        alias free='free -m'                # show sizes in MB
-        alias grep='grep --color=auto'
-        alias grep='grep --color=tty -d skip'
-        alias mkdir='mkdir -p -v'
-        alias more='less'
-        alias nano='nano -w'
-        alias ping='ping -c 5'
-    #}}}
     ## BASH HISTORY #{{{
         # make multiple shells share the same history file
         export HISTSIZE=10000           # bash history will save N commands
@@ -98,6 +85,19 @@ _isroot=false
     #}}}
 #}}}
 ## ALIAS #{{{
+    ## MODIFIED COMMANDS #{{{
+        alias ..='cd ..'
+        alias df='df -h'
+        alias diff='colordiff'              # requires colordiff package
+        alias du='du -c -h'
+        alias free='free -m'                # show sizes in MB
+        alias grep='grep --color=auto'
+        alias grep='grep --color=tty -d skip'
+        alias mkdir='mkdir -p -v'
+        alias more='less'
+        alias nano='nano -w'
+        alias ping='ping -c 5'
+    #}}}
     ## PRIVILEGED ACCESS #{{{
         if ! $_isroot; then
             alias sudo='sudo '
