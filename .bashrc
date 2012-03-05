@@ -44,19 +44,19 @@ _isroot=false
         export TERM='xterm-color'
     fi
 #}}}
-## BASH COMPLETION #{{{
+## BASH OPTIONS #{{{
+    shopt -s cdspell                 # Correct cd typos
+    shopt -s checkwinsize            # Update windows size on command
+    shopt -s histappend              # Append History instead of overwriting file
+    shopt -s cmdhist                 # Bash attempts to save all lines of a multiple-line command in the same history entry
+    shopt -s extglob                 # Extended pattern
+    shopt -s no_empty_cmd_completion # No empty completion
+    ## COMPLETION #{{{
     complete -cf sudo
     if [ -f /etc/bash_completion ]; then
         . /etc/bash_completion
     fi
-    ## BASH OPTIONS#{{{
-        shopt -s cdspell                 # Correct cd typos
-        shopt -s checkwinsize            # Update windows size on command
-        shopt -s histappend              # Append History instead of overwriting file
-        shopt -s cmdhist                 # Bash attempts to save all lines of a multiple-line command in the same history entry
-        shopt -s extglob                 # Extended pattern
-        shopt -s no_empty_cmd_completion # No empty completion
-    # #}}}
+    #}}}
 #}}}
 ## EXPORTS #{{{
     export PATH=/usr/local/bin:$PATH
@@ -110,7 +110,7 @@ _isroot=false
             alias netcfg='sudo netcfg2'
         fi
     #}}}
-    ## PACMAN ALIASES (if applicable, replace 'pacman' with 'yaourt'|'packer') #{{{
+    ## PACMAN ALIASES (if applicable, replace 'sudo pacman' with 'yaourt') #{{{
         # we're on ARCH
         if $_isarch; then
             # we're not root
