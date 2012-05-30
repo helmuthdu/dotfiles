@@ -17,7 +17,6 @@ _isroot=false
     [ -f $HOME/.dircolors ] && eval $(dircolors -b $HOME/.dircolors)
     if $_isxrunning; then
 
-<<<<<<< HEAD
         [ -f $HOME/.dircolors_256 ] && eval $(dircolors -b $HOME/.dircolors_256)
 
         export TERM='xterm-256color'
@@ -34,30 +33,6 @@ _isroot=false
             export PS1="[$P$@\l$W][$Y\u@\h$W:$B\W$W]\$ "
         else
             export PS1="[$P$@\l$W][$R\u@\h$W:$B\W$W]# "
-=======
-        #[ -f $HOME/.dircolors_256 ] && eval $(dircolors -b $HOME/.dircolors_256)
-
-        export TERM='xterm-256color'
-
-        R='\[\e[1;31m\]'
-        #G='\[\e[1;32m\]'
-        G='\[\e[1;38;5;82m\]'
-        Y='\[\e[1;33m\]'
-        #B='\[\e[1;34m\]'
-        B='\[\e[1;38;5;33m\]'
-        LB='\[\e[1;38;5;81m\]'
-        #P='\[\e[1;35m\]'
-        P='\[\e[1;38;5;140m\]'
-        E='\[\e[1;37m\]'
-        W='\[\e[0m\]'
-
-        DEV=`tty | /bin/sed -e 's:/dev/pts/::'`
-
-        if ! $_isroot; then
-            export PS1="[$P$DEV$W][$LB\u$W][$B\W$W]\$ "
-        else
-            export PS1="[$P$DEV$W][$R\u$W][$B\W$W]# "
->>>>>>> 83de57d8bc3da827b3d9a59307109e68732fc738
         fi
     else
         export TERM='xterm-color'
