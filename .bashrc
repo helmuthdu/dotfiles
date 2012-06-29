@@ -5,19 +5,19 @@ _islinux=false
 [[ "$(uname -s)" =~ Linux|GNU|GNU/* ]] && _islinux=true
 
 _isarch=false
-[ -f /etc/arch-release ] && _isarch=true
+[[ -f /etc/arch-release ]] && _isarch=true
 
 _isxrunning=false
-[ -n "$DISPLAY" ] && _isxrunning=true
+[[ -n "$DISPLAY" ]] && _isxrunning=true
 
 _isroot=false
-[ $UID -eq 0 ] && _isroot=true
+[[ $UID -eq 0 ]] && _isroot=true
 # }}}
 ## PS1 CONFIG #{{{
-    [ -f $HOME/.dircolors ] && eval $(dircolors -b $HOME/.dircolors)
+    [[ -f $HOME/.dircolors ]] && eval $(dircolors -b $HOME/.dircolors)
     if $_isxrunning; then
 
-        [ -f $HOME/.dircolors_256 ] && eval $(dircolors -b $HOME/.dircolors_256)
+        [[ -f $HOME/.dircolors_256 ]] && eval $(dircolors -b $HOME/.dircolors_256)
 
         export TERM='xterm-256color'
 
@@ -26,7 +26,7 @@ _isroot=false
         D='\[\e[1;38;5;242m\]'
         G='\[\e[1;38;5;82m\]'
         P='\[\e[1;38;5;161m\]'
-        PP='\[\e[1;38;5;129m\]'
+       PP='\[\e[1;38;5;129m\]'
         R='\[\e[1;38;5;196m\]'
         Y='\[\e[1;38;5;214m\]'
         W='\[\e[0m\]'
@@ -67,7 +67,7 @@ _isroot=false
     shopt -s no_empty_cmd_completion # No empty completion
     ## COMPLETION #{{{
     complete -cf sudo
-    if [ -f /etc/bash_completion ]; then
+    if [[ -f /etc/bash_completion ]]; then
         . /etc/bash_completion
     fi
     #}}}
@@ -168,7 +168,7 @@ _isroot=false
 #}}}
 ## FUNCTIONS #{{{
     ## COPY/MOVE DESTINY #{{{
-    function goto() { [ -d "$1" ] && cd "$1" || cd "$(dirname "$1")"; }
+    function goto() { [[ -d "$1" ]] && cd "$1" || cd "$(dirname "$1")"; }
     cpf() { cp "$@" && goto "$_"; }
     mvf() { mv "$@" && goto "$_"; }
     #}}}
@@ -188,11 +188,11 @@ _isroot=false
     #}}}
     ## CONVERT TO ISO #{{{
     function to_iso () {
-        if [ $# = 0 ] || [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
-            echo -e "Converts raw, bin, cue, ccd, img, mdf, nrg cd/dvd image files to ISO image file. Usage ${R}'to_iso file1 file2...'${W}"
+        if [[ $# == 0 || $1 == "--help" || $1 == "-h" ]]; then
+            echo -e "Converts raw, bin, cue, ccd, img, mdf, nrg cd/dvd image files to ISO image file.\nUsage: to_iso file1 file2..."
         fi
         for i in $*; do
-            if [ ! -f "$i" ]; then
+            if [[ ! -f "$i" ]]; then
                 echo "'$i' is not a valid file; jumping it"
             else
                 echo -n "converting $i..."
@@ -205,7 +205,7 @@ _isroot=false
                       *.nrg ) nrg2iso $i $OUT.iso;; #nero images
                           * ) echo "to_iso don't know de extension of '$i'";;
                 esac
-                if [ $? != 0 ]; then
+                if [[ $? != 0 ]]; then
                     echo -e "${R}ERROR!${W}"
                 else
                     echo -e "${G}done!${W}"
@@ -253,7 +253,7 @@ _isroot=false
     #}}}
     ## ARCHIVE COMPRESS #{{{
     function compress () {
-        if [ -n "$1" ] ; then
+        if [[ -n "$1" ]] ; then
             FILE=$1
             case $FILE in
                     *.tar ) shift && tar cf $FILE $* ;;
@@ -331,7 +331,7 @@ _isroot=false
             esac
             nf=$(echo $filename | tr A-Z a-z)
             newname="${dirname}/${nf}"
-            if [ "$nf" != "$filename" ]; then
+            if [[ "$nf" != "$filename" ]]; then
                 mv "$file" "$newname"
                 echo "lowercase: $file --> $newname"
             else
@@ -345,9 +345,9 @@ _isroot=false
         function swap() {
             local TMPFILE=tmp.$$
 
-            [ $# -ne 2 ] && echo "swap: 2 arguments needed" && return 1
-            [ ! -e $1 ] && echo "swap: $1 does not exist" && return 1
-            [ ! -e $2 ] && echo "swap: $2 does not exist" && return 1
+            [[ $# -ne 2 ]] && echo "swap: 2 arguments needed" && return 1
+            [[ ! -e $1 ]] && echo "swap: $1 does not exist" && return 1
+            [[ ! -e $2 ]] && echo "swap: $2 does not exist" && return 1
 
             mv "$1" $TMPFILE
             mv "$2" "$1"
