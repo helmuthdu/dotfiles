@@ -23,16 +23,36 @@ _isroot=false
 
         B='\[\e[1;38;5;33m\]'
        LB='\[\e[1;38;5;81m\]'
+        D='\[\e[1;38;5;242m\]'
         G='\[\e[1;38;5;82m\]'
-        P='\[\e[1;38;5;125m\]'
-        R='\[\e[1;38;5;160m\]'
-        Y='\[\e[1;38;5;178m\]'
+        P='\[\e[1;38;5;161m\]'
+        PP='\[\e[1;38;5;129m\]'
+        R='\[\e[1;38;5;196m\]'
+        Y='\[\e[1;38;5;214m\]'
         W='\[\e[0m\]'
 
+        DEV=`tty | /bin/sed -e 's:/dev/pts/::'`
+
+        case $DEV in
+            1) DEV=➊;;
+            2) DEV=➋;;
+            3) DEV=➌;;
+            4) DEV=➍;;
+            5) DEV=➎;;
+            6) DEV=➏;;
+            7) DEV=➐;;
+            8) DEV=➑;;
+            9) DEV=➒;;
+           10) DEV=➓;;
+           11) DEV=⓫;;
+           12) DEV=⓬;;
+        esac
+        DEV=" $P‧$DEV‧"
+
         if ! $_isroot; then
-            export PS1="[$P$@\l$W][$Y\u@\h$W:$B\W$W]\$ "
+            export PS1="$DEV$D[$Y\u$D@$Y\h$D:$B\W$D]$W "
         else
-            export PS1="[$P$@\l$W][$R\u@\h$W:$B\W$W]# "
+            export PS1="$DEV$D[$R\u$D@$R\h$D:$B\W$D]$W "
         fi
     else
         export TERM='xterm-color'
