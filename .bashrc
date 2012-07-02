@@ -50,9 +50,9 @@ _isroot=false
         DEV=" $P‧$DEV‧"
 
         if ! $_isroot; then
-            export PS1="$DEV$D[$Y\u$D@$Y\h$D:$B\W$D]$W "
+            export PS1="$D[$Y\u$DEV$Y\h$D:$B\W$D]$W "
         else
-            export PS1="$DEV$D[$R\u$D@$R\h$D:$B\W$D]$W "
+            export PS1="$D[$R\u$DEV$R\h$D:$B\W$D]$W "
         fi
     else
         export TERM='xterm-color'
