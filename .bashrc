@@ -47,12 +47,20 @@ _isroot=false
            11) DEV=⓫;;
            12) DEV=⓬;;
         esac
-        DEV=" $D‧$DEV‧"
+        DEV=" $P‧$DEV‧"
 
-        if ! $_isroot; then
-            export PS1="$D[$Y\u$DEV$P\h$D:$B\W$D]$W "
+        if $_isarch; then
+            if ! $_isroot; then
+                export PS1="$D[$Y\u$DEV$P\h$D:$B\W$D]$W\$ "
+            else
+                export PS1="$D[$R\u$DEV$P\h$D:$B\W$D]$W# "
+            fi
         else
-            export PS1="$D[$R\u$DEV$P\h$D:$B\W$D]$W "
+            if ! $_isroot; then
+                export PS1="$D[$Y\u$D($@\l)$P\h$W:$B\W$D]$W\$ "
+            else
+                export PS1="$D[$R\u$D($@\l)$P\h$W:$B\W$D]$W# "
+            fi
         fi
     else
         export TERM='xterm-color'
