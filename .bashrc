@@ -49,18 +49,12 @@ _isroot=false
         esac
         DEV=" $P‧$DEV‧"
 
-        if $_isarch; then
-            if ! $_isroot; then
-                export PS1="$D[$Y\u$DEV$P\h$D:$B\W$D]$W\$ "
-            else
-                export PS1="$D[$R\u$DEV$P\h$D:$B\W$D]$W# "
-            fi
+        if ! $_isroot; then
+            #export PS1="$D[$Y\u$DEV$P\h$D:$B\W$D]$W\$ "
+            export PS1="$D[$Y\u$D($@\l)$P\h$W:$B\W$D]$W\$ "
         else
-            if ! $_isroot; then
-                export PS1="$D[$Y\u$D($@\l)$P\h$W:$B\W$D]$W\$ "
-            else
-                export PS1="$D[$R\u$D($@\l)$P\h$W:$B\W$D]$W# "
-            fi
+            #export PS1="$D[$R\u$DEV$P\h$D:$B\W$D]$W# "
+            export PS1="$D[$R\u$D($@\l)$P\h$W:$B\W$D]$W# "
         fi
     else
         export TERM='xterm-color'
