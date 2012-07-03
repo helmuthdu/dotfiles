@@ -160,15 +160,29 @@ _isroot=false
             alias gfv='get_flash_videos -r 720p --subtitles'
         fi
     #}}}
-    ## ls #{{{
+    ## LS #{{{
         alias ls='ls -hF --color=auto'
         alias lr='ls -R'                    # recursive ls
-        alias ll='ls -l'
+        alias ll='ls -alh'
         alias la='ll -A'
         alias lm='la | more'
     #}}}
 #}}}
 ## FUNCTIONS #{{{
+    ## UP #{{{
+    # Goes up many dirs as the number passed as argument, if none goes up by 1 by default
+    function up(){
+        local d=""
+        limit=$1
+        for ((i=1 ; i <= limit ; i++)); do
+            d=$d/..
+        done
+        d=$(echo $d | sed 's/^\///')
+        if [ -z "$d" ]; then
+            d=..
+        fi
+        cd $d
+    } #}}}
     ## COPY/MOVE DESTINY #{{{
     function goto() { [[ -d "$1" ]] && cd "$1" || cd "$(dirname "$1")"; }
     cpf() { cp "$@" && goto "$_"; }
@@ -218,39 +232,28 @@ _isroot=false
     #}}}
     ## ARCHIVE EXTRACTOR #{{{
     function extract() {
-        local c e i
-
-        (($#)) || return
-
-        for i; do
-            c=''
-            e=1
-            if [[ ! -r $i ]]; then
-                echo "$0: file is unreadable: \`$i'" >&2
-                continue
-            fi
-            case $i in
-                *.tar.bz2 ) tar xvjf $1 ;;
-                 *.tar.gz ) tar xvzf $1 ;;
-                 *.tar.xz ) tar xvJf $1 ;;
-                    *.tar ) tar xvf $1 ;;
-                   *.tbz2 ) tar xvjf $1 ;;
-                    *.tgz ) tar xvzf $1 ;;
-                    *.rar ) unrar x $1 ;;
-                     *.gz ) gunzip $1 ;;
-                    *.bz2 ) bunzip2 $1 ;;
-                    *.zip ) unzip $1 ;;
-                      *.Z ) uncompress $1 ;;
-                     *.7z ) 7z x $1 ;;
-                     *.xz ) unxz $1 ;;
-                    *.exe ) cabextract $1 ;;
-                        * ) echo "$0: unrecognized file extension: \`$i'" >&2
-                           continue;;
-            esac
-                command $c "$i"
-                e=$?З
-        done
-        return $e
+        if [[ -f $1 ]] ; then
+             case $1 in
+             *.tar.bz2 ) tar xvjf $1     ;;
+              *.tar.gz ) tar xvzf $1     ;;
+                 *.bz2 ) bunzip2 $1      ;;
+                 *.rar ) unrar x $1      ;;
+                  *.gz ) gunzip $1       ;;
+                 *.tar ) tar xvf $1      ;;
+                *.tbz2 ) tar xvjf $1     ;;
+                 *.tgz ) tar xvzf $1     ;;
+                 *.zip ) unzip $1        ;;
+                   *.Z ) uncompress $1   ;;
+                  *.7z ) 7z x $1         ;;
+                     * ) echo "'$1' cannot be extracted via >extract<" ;;
+             esac
+         else
+             echo "'$1' is not a valid file"
+         fi
+         PACKAGE_NAME="$1"
+         EXT=(".tar.bz2" ".tar.gz" ".bz2" ".rar" ".gz" ".tar" ".tbz2" ".tgz" ".zip" ".7z" ".z");
+         for FILENAME in ${EXT[@]}; do PACKAGE_NAME=`echo $PACKAGE_NAME | sed 's/'$FILENAME'//'`; done
+         cd $PACKAGE_NAME
     }
     #}}}
     ## ARCHIVE COMPRESS #{{{
@@ -288,32 +291,6 @@ _isroot=false
         fi
     }
     #}}}
-    ## MANAGE SERVICES #{{{
-    function service(){
-        local operation=$1
-        local args=("$@")
-        local daemons=("${args[@]:1}")
-
-        case $operation in
-            start|stop|reload|status)
-                for d in ${daemons[@]}; do
-                    sudo /etc/rc.d/$d $operation
-                done
-                ;;
-            restart)
-                for (( i=0; i<${#daemons[@]}; i++ )); do
-                    service stop ${daemons[i]}
-                done
-
-                for (( i=${#daemons[@]}-1; i>=0; i-- )); do
-                    service start ${daemons[i]}
-                done
-                ;;
-            *)
-                echo -e "Invalid operation: '$operation'"
-                ;;
-        esac
-    } #}}}
     ## FILE & STRINGS RELATED FUNCTIONS #{{{
         ## Find a file with a pattern in name #{{{
         function ff()
