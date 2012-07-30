@@ -122,8 +122,6 @@ _isroot=false
             alias root='sudo su'
             alias reboot='sudo reboot'
             alias halt='sudo halt'
-            alias update='sudo pacman -Su'
-            alias netcfg='sudo netcfg2'
         fi
     #}}}
     ## PACMAN ALIASES (if applicable, replace 'sudo pacman' with 'yaourt') #{{{
@@ -273,7 +271,7 @@ _isroot=false
         fi
     }
     #}}}
-    ## REMIND ME, ITS IMPORTANT!  #{{{
+    ## REMIND ME, ITS IMPORTANT! #{{{
     # usage: remindme <time> <text>
     # e.g.: remindme 10m "omg, the pizza"
     function remindme()
@@ -281,7 +279,7 @@ _isroot=false
         sleep $1 && zenity --info --text "$2" &
     }
     #}}}
-    ## SIMPLE CALCULATOR  #{{{
+    ## SIMPLE CALCULATOR #{{{
     # usage: calc <equation>
     function calc() {
         if which bc &>/dev/null; then
@@ -342,5 +340,44 @@ _isroot=false
             rm -rf /tmp/list
         }
         #}}}
+    #}}}
+    ## SYSTEMD|SYSVINIT SUPPORT #{{{
+    if ! systemd-notify --booted; then # not using systemd
+        start() {
+            sudo rc.d start $1
+        }
+
+        restart() {
+            sudo rc.d restart $1
+        }
+
+        stop() {
+            sudo rc.d stop $1
+        }
+    else
+        start() {
+            sudo systemctl start $1.service
+        }
+
+        restart() {
+            sudo systemctl restart $1.service
+        }
+
+        stop() {
+            sudo systemctl stop $1.service
+        }
+
+        enable() {
+            sudo systemctl enable $1.service
+        }
+
+        status() {
+            sudo systemctl status $1.service
+        }
+
+        disable() {
+            sudo systemctl disable $1.service
+        }
+    fi
     #}}}
 #}}}
