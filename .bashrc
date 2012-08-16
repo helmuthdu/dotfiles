@@ -341,42 +341,34 @@ _isroot=false
         }
         #}}}
     #}}}
-    ## SYSTEMD|SYSVINIT SUPPORT #{{{
-    if ! systemd-notify --booted; then # not using systemd
+    ## SYSTEMD SUPPORT #{{{
+    if $_isarch; then
+        # we're not root
+        if ! $_isroot; then
+            alias systemctl='sudo systemctl'
+        fi
         start() {
-            sudo rc.d start $1
+            systemctl start $1.service
         }
 
         restart() {
-            sudo rc.d restart $1
+            systemctl restart $1.service
         }
 
         stop() {
-            sudo rc.d stop $1
-        }
-    else
-        start() {
-            sudo systemctl start $1.service
-        }
-
-        restart() {
-            sudo systemctl restart $1.service
-        }
-
-        stop() {
-            sudo systemctl stop $1.service
+            systemctl stop $1.service
         }
 
         enable() {
-            sudo systemctl enable $1.service
+            systemctl enable $1.service
         }
 
         status() {
-            sudo systemctl status $1.service
+            systemctl status $1.service
         }
 
         disable() {
-            sudo systemctl disable $1.service
+            systemctl disable $1.service
         }
     fi
     #}}}
