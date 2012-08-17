@@ -342,33 +342,29 @@ _isroot=false
         #}}}
     #}}}
     ## SYSTEMD SUPPORT #{{{
-    if $_isarch; then
-        # we're not root
-        if ! $_isroot; then
-            alias systemctl='sudo systemctl'
-        fi
+    if [[ -f /usr/bin/systemctl ]]; then
         start() {
-            systemctl start $1.service
+            sudo systemctl start $1.service
         }
 
         restart() {
-            systemctl restart $1.service
+            sudo systemctl restart $1.service
         }
 
         stop() {
-            systemctl stop $1.service
+            sudo systemctl stop $1.service
         }
 
         enable() {
-            systemctl enable $1.service
+            sudo systemctl enable $1.service
         }
 
         status() {
-            systemctl status $1.service
+            sudo systemctl status $1.service
         }
 
         disable() {
-            systemctl disable $1.service
+            sudo systemctl disable $1.service
         }
     fi
     #}}}
