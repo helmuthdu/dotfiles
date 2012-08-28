@@ -230,98 +230,168 @@ _isroot=false
     #}}}
     ## ARCHIVE EXTRACTOR #{{{
     function extract() {
-    clrstart="\033[1;34m"  #color codes
-    clrend="\033[0m"
+        clrstart="\033[1;34m"  #color codes
+        clrend="\033[0m"
 
-    if [ "$#" -lt 1 ]
-    then
-        echo -e "${clrstart}Pass a filename. Optionally a destination folder. You can also append a v for verbose output.${clrend}"
-        exit 1 #not enough args
-    fi
-
-    if [ ! -e "$1" ]
-    then
-        echo -e "${clrstart}File does not exist!${clrend}"
-        exit 2 #file not found
-    fi
-
-
-    if [ -z "$2" ]
-    then
-        DESTDIR="." #set destdir to current dir
-    else
-        if [ ! -d "$2" ]
+        if [ "$#" -lt 1 ]
         then
-            echo -e -n "${clrstart}Destination folder doesn't exist or isnt a directory. Create? (y/n): ${clrend}"
-            read response
-            #echo -e "\n"
-            if [ "$response" = y -o "$response" = Y ]
+            echo -e "${clrstart}Pass a filename. Optionally a destination folder. You can also append a v for verbose output.${clrend}"
+            exit 1 #not enough args
+        fi
+
+        if [ ! -e "$1" ]
+        then
+            echo -e "${clrstart}File does not exist!${clrend}"
+            exit 2 #file not found
+        fi
+
+
+        if [ -z "$2" ]
+        then
+            DESTDIR="." #set destdir to current dir
+        else
+            if [ ! -d "$2" ]
             then
-                mkdir -p "$2"
-                if [ $? -eq 0 ]
+                echo -e -n "${clrstart}Destination folder doesn't exist or isnt a directory. Create? (y/n): ${clrend}"
+                read response
+                #echo -e "\n"
+                if [ "$response" = y -o "$response" = Y ]
                 then
-                    DESTDIR="$2"
-                else exit 6 #Write perms error
+                    mkdir -p "$2"
+                    if [ $? -eq 0 ]
+                    then
+                        DESTDIR="$2"
+                    else exit 6 #Write perms error
+                    fi
+                else
+                    echo -e "${clrstart}Closing.${clrend}"; exit 3 # n/wrong response
                 fi
             else
-                echo -e "${clrstart}Closing.${clrend}"; exit 3 # n/wrong response
+                DESTDIR="$2"
             fi
-        else
-            DESTDIR="$2"
         fi
-    fi
 
-    if [ ! -z "$3" ]
-    then
-        if [ "$3" != "v" ]
+        if [ ! -z "$3" ]
         then
-            echo -e "${clrstart}Wrong argument $3 !${clrend}"
-            exit 4 #wrong arg 3
+            if [ "$3" != "v" ]
+            then
+                echo -e "${clrstart}Wrong argument $3 !${clrend}"
+                exit 4 #wrong arg 3
+            fi
         fi
-    fi
 
-    filename=`basename "$1"`
+        filename=`basename "$1"`
 
-    #echo "${filename##*.}" debug
+        #echo "${filename##*.}" debug
 
-    case "${filename##*.}" in
-        tar)
-            echo -e "${clrstart}Extracting $1 to $DESTDIR: (uncompressed tar)${clrend}"
-            tar x${3}f "$1" -C "$DESTDIR"
-            ;;
-        gz)
-            echo -e "${clrstart}Extracting $1 to $DESTDIR: (gip compressed tar)${clrend}"
-            tar x${3}fz "$1" -C "$DESTDIR"
-            ;;
-        tgz)
-            echo -e "${clrstart}Extracting $1 to $DESTDIR: (gip compressed tar)${clrend}"
-            tar x${3}fz "$1" -C "$DESTDIR"
-            ;;
-        xz)
-            echo -e "${clrstart}Extracting  $1 to $DESTDIR: (gip compressed tar)${clrend}"
-            tar x${3}f -J "$1" -C "$DESTDIR"
-            ;;
-        bz2)
-            echo -e "${clrstart}Extracting $1 to $DESTDIR: (bzip compressed tar)${clrend}"
-            tar x${3}fj "$1" -C "$DESTDIR"
-            ;;
-        zip)
-            echo -e "${clrstart}Extracting $1 to $DESTDIR: (zipp compressed file)${clrend}"
-            unzip "$1" -d "$DESTDIR"
-            ;;
-        rar)
-            echo -e "${clrstart}Extracting $1 to $DESTDIR: (rar compressed file)${clrend}"
-            unrar x "$1" "$DESTDIR"
-            ;;
-        7z)
-            echo -e  "${clrstart}Extracting $1 to $DESTDIR: (7zip compressed file)${clrend}"
-            7za e "$1" -o"$DESTDIR"
-            ;;
-        *)
-            echo -e "${clrstart}Unknown archieve format!"
-            exit 5
-            ;;
-    esac
+        case "${filename##*.}" in
+            tar)
+                echo -e "${clrstart}Extracting $1 to $DESTDIR: (uncompressed tar)${clrend}"
+                tar x${3}f "$1" -C "$DESTDIR"
+                ;;
+            gz)
+                echo -e "${clrstart}Extracting $1 to $DESTDIR: (gip compressed tar)${clrend}"
+                tar x${3}fz "$1" -C "$DESTDIR"
+                ;;
+            tgz)
+                echo -e "${clrstart}Extracting $1 to $DESTDIR: (gip compressed tar)${clrend}"
+                tar x${3}fz "$1" -C "$DESTDIR"
+                ;;
+            xz)
+                echo -e "${clrstart}Extracting  $1 to $DESTDIR: (gip compressed tar)${clrend}"
+                tar x${3}f -J "$1" -C "$DESTDIR"
+                ;;
+            bz2)
+                echo -e "${clrstart}Extracting $1 to $DESTDIR: (bzip compressed tar)${clrend}"
+                tar x${3}fj "$1" -C "$DESTDIR"
+                ;;
+            zip)
+                echo -e "${clrstart}Extracting $1 to $DESTDIR: (zipp compressed file)${clrend}"
+                unzip "$1" -d "$DESTDIR"
+                ;;
+            rar)
+                echo -e "${clrstart}Extracting $1 to $DESTDIR: (rar compressed file)${clrend}"
+                unrar x "$1" "$DESTDIR"
+                ;;
+            7z)
+                echo -e  "${clrstart}Extracting $1 to $DESTDIR: (7zip compressed file)${clrend}"
+                7za e "$1" -o"$DESTDIR"
+                ;;
+            *)
+                echo -e "${clrstart}Unknown archieve format!"
+                exit 5
+                ;;
+        esac
+    }
+    #}}}
+    ## SHOW CONTENTS #{{{
+    function showcontent() {
+        if [ "$#" -lt 1 ]
+        then
+            echo "Pass a filename. You can specify v after filename for verbose output."
+            exit 2 #filename not passed
+        fi
+
+        if [ ! -e "$1" ]
+        then
+            echo "File does not exist!"
+            exit 3 #file not found
+        fi
+
+
+        if [ ! -z "$2" ]
+        then
+            if [ "$2" = "v" ]
+            then
+                echo  "Verbose on." #verbose output by tar
+            else
+                echo "Wrong argument!"
+                exit 4  #wrong second argument
+            fi
+        fi
+
+        filename=`basename "$1"`
+
+        #echo "${filename##*.}" debug
+
+        case "${filename##*.}" in
+            tar)
+                echo "Displaying contents of $1: (uncompressed tar)"
+                tar t${2}f "$1"
+                ;;
+            gz)
+                echo "Displaying contents of $1: (gip compressed tar)"
+                tar t${2}fz "$1"
+                ;;
+            tgz)
+                echo "Displaying contents of $1: (gip compressed tar)"
+                tar t${2}fz "$1"
+                ;;
+            xz)
+                echo "Displaying contents of $1: (gip compressed tar)"
+                tar -J "$1"
+                ;;
+            bz2)
+                echo "Displaying contents of $1: (bzip compressed tar)"
+                tar t${2}fj "$1"
+                ;;
+            zip)
+                echo "Displaying contents of $1: (zipp compressed file)"
+                unzip -l "$1"
+                ;;
+            rar)
+                echo "Displaying contents of $1: (rar compressed file)"
+                unrar l${2}t "$1"
+                ;;
+            7z)
+                echo  "Displaying contents of $1: (7zip compressed file)"
+                7za l "$1"
+                ;;
+            *)
+                echo "Unknown archieve format!"
+                exit 1
+                ;;
+        esac
     }
     #}}}
     ## ARCHIVE COMPRESS #{{{
