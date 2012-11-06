@@ -76,8 +76,6 @@ _isroot=false
 #}}}
 ## EXPORTS #{{{
     export PATH=/usr/local/bin:$PATH
-    export EDITOR='vim'
-    export VISUAL='vim'
     ## BASH HISTORY #{{{
         # make multiple shells share the same history file
         export HISTSIZE=10000           # bash history will save N commands
