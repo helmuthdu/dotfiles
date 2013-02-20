@@ -31,29 +31,9 @@ _isroot=false
         Y='\[\e[1;38;5;214m\]'
         W='\[\e[0m\]'
 
-        DEV=`tty | /bin/sed -e 's:/dev/pts/::'`
-
-        case $DEV in
-            1) DEV=➊;;
-            2) DEV=➋;;
-            3) DEV=➌;;
-            4) DEV=➍;;
-            5) DEV=➎;;
-            6) DEV=➏;;
-            7) DEV=➐;;
-            8) DEV=➑;;
-            9) DEV=➒;;
-           10) DEV=➓;;
-           11) DEV=⓫;;
-           12) DEV=⓬;;
-        esac
-        DEV=" $P‧$DEV‧"
-
         if ! $_isroot; then
-            #export PS1="$D[$Y\u$DEV$P\h$D:$B\W$D]$W\$ "
             export PS1="$D[$Y\u$D($PP$@\l$D)$P\h$W:$B\W$D]$W\$ "
         else
-            #export PS1="$D[$R\u$DEV$P\h$D:$B\W$D]$W# "
             export PS1="$D[$R\u$D($PP$@\l$D)$P\h$W:$B\W$D]$W# "
         fi
     else
@@ -76,6 +56,7 @@ _isroot=false
 #}}}
 ## EXPORTS #{{{
     export PATH=/usr/local/bin:$PATH
+    export EDITOR="vim"
     ## BASH HISTORY #{{{
         # make multiple shells share the same history file
         export HISTSIZE=10000           # bash history will save N commands
@@ -154,6 +135,10 @@ _isroot=false
     ## MULTIMEDIA #{{{
         if which get_flash_videos &>/dev/null; then
             alias gfv='get_flash_videos -r 720p --subtitles'
+        fi
+        if which simple-mtpfs &>/dev/null; then
+          alias android-connect="simple-mtpfs /media/android"
+          alias android-disconnect="fusermount -u /media/android"
         fi
     #}}}
     ## LS #{{{
