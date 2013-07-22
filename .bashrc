@@ -23,7 +23,7 @@ _isroot=false
 
     B='\[\e[1;38;5;33m\]'
     LB='\[\e[1;38;5;81m\]'
-    D='\[\e[1;38;5;242m\]'
+    GY='\[\e[1;38;5;242m\]'
     G='\[\e[1;38;5;82m\]'
     P='\[\e[1;38;5;161m\]'
     PP='\[\e[1;38;5;93m\]'
@@ -32,9 +32,9 @@ _isroot=false
     W='\[\e[0m\]'
 
     if ! $_isroot; then
-      export PS1="$D[$Y\u$D($PP$@\l$D)$P\h$W:$B\W$D]$W\$ "
+      export PS1="$GY[$Y\u$GY@$P\h$W:$B\W$GY]$W\$ "
     else
-      export PS1="$D[$R\u$D($PP$@\l$D)$P\h$W:$B\W$D]$W# "
+      export PS1="$GY[$R\u$GY@$P\h$W:$B\W$GY]$W# "
     fi
   else
     export TERM='xterm-color'
