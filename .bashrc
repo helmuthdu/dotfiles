@@ -113,33 +113,26 @@ _isroot=false
       alias halt='sudo halt'
     fi
   #}}}
-  ## PACMAN ALIASES (if applicable, replace 'sudo pacman' with 'yaourt') {{{
+  ## PACMAN ALIASES
     # we're on ARCH
     if $_isarch; then
       # we're not root
       if ! $_isroot; then
-        # pacman-color is installed
-        if which pacman-color &>/dev/null; then
-          alias pacman='sudo pacman-color'
-          # pacman-color not installed
-        else
-          alias pacman='sudo pacman'
-        fi
+        alias pacman='sudo pacman'
       fi
-      alias pac="pacman -S"      # default action     - install one or more packages
-      alias pacu="pacman -Syu"   # '[u]pdate'         - upgrade all packages to their newest version
-      alias pacs="pacman -Ss"    # '[s]earch'         - search for a package using one or more keywords
-      alias paci="pacman -Si"    # '[i]nfo'           - show information about a package
-      alias pacr="pacman -R"     # '[r]emove'         - uninstall one or more packages
-      alias pacl="pacman -Sl"    # '[l]ist'           - list all packages of a repository
-      alias pacll="pacman -Qqm"  # '[l]ist [l]ocal'   - list all packages which were locally installed (e.g. AUR packages)
-      alias paclo="pacman -Qdt"  # '[l]ist [o]rphans' - list all packages which are orphaned
-      alias paco="pacman -Qo"    # '[o]wner'          - determine which package owns a given file
-      alias pacf="pacman -Ql"    # '[f]iles'          - list all files installed by a given package
-      alias pacc="pacman -Sc"    # '[c]lean cache'    - delete all not currently installed package files
-      alias pacm="makepkg -fci"  # '[m]ake'           - make package from PKGBUILD file in current directory
-      alias paccurrupt='find /var/cache/pacman/pkg -name '\''*.part.*'\'''
-      alias pactest='pacman -Sql testing | xargs pacman -Q 2>/dev/null'
+      alias pacupg='pacman -Syu'            # Synchronize with repositories and then upgrade packages that are out of date on the local system.
+      alias pacupd='pacman -Sy'             # Refresh of all package lists after updating /etc/pacman.d/mirrorlist
+      alias pacin='pacman -S'               # Install specific package(s) from the repositories
+      alias pacinu='pacman -U'              # Install specific local package(s)
+      alias pacre='pacman -R'               # Remove the specified package(s), retaining its configuration(s) and required dependencies
+      alias pacun='pacman -Rcsn'            # Remove the specified package(s), its configuration(s) and unneeded dependencies
+      alias pacinfo='pacman -Si'            # Display information about a given package in the repositories
+      alias pacse='pacman -Ss'              # Search for package(s) in the repositories
+
+      alias pacupa='pacman -Sy && sudo abs' # Update and refresh the local package and ABS databases against repositories
+      alias pacind='pacman -S --asdeps'     # Install given package(s) as dependencies of another package
+      alias pacclean="pacman -Sc"           # Delete all not currently installed package files
+      alias pacmake="makepkg -fcsi"         # Make package from PKGBUILD file in current directory
     fi
   #}}}
   ## MULTIMEDIA {{{
