@@ -90,7 +90,7 @@ _isroot=false
 ## ALIAS {{{
   alias freemem='sudo /sbin/sysctl -w vm.drop_caches=3'
   alias enter_matrix='echo -e "\e[32m"; while :; do for i in {1..16}; do r="$(($RANDOM % 2))"; if [[ $(($RANDOM % 5)) == 1 ]]; then if [[ $(($RANDOM % 4)) == 1 ]]; then v+="\e[1m $r   "; else v+="\e[2m $r   "; fi; else v+="     "; fi; done; echo -e "$v"; v=""; done'
-  ## MODIFIED COMMANDS {{{
+  # MODIFIED COMMANDS {{{
     alias ..='cd ..'
     alias df='df -h'
     alias diff='colordiff'              # requires colordiff package
@@ -103,7 +103,7 @@ _isroot=false
     alias nano='nano -w'
     alias ping='ping -c 5'
   #}}}
-  ## PRIVILEGED ACCESS {{{
+  # PRIVILEGED ACCESS {{{
     if ! $_isroot; then
       alias sudo='sudo '
       alias scat='sudo cat'
@@ -113,7 +113,7 @@ _isroot=false
       alias halt='sudo halt'
     fi
   #}}}
-  ## PACMAN ALIASES
+  # PACMAN ALIASES {{{
     # we're on ARCH
     if $_isarch; then
       # we're not root
@@ -135,7 +135,7 @@ _isroot=false
       alias pacmake="makepkg -fcsi"         # Make package from PKGBUILD file in current directory
     fi
   #}}}
-  ## MULTIMEDIA {{{
+  # MULTIMEDIA {{{
     if which get_flash_videos &>/dev/null; then
       alias gfv='get_flash_videos -r 720p --subtitles'
     fi
@@ -144,12 +144,124 @@ _isroot=false
       alias android-disconnect="fusermount -u /media/android"
     fi
   #}}}
-  ## LS {{{
+  # LS {{{
     alias ls='ls -hF --color=auto'
     alias lr='ls -R'                    # recursive ls
     alias ll='ls -alh'
     alias la='ll -A'
     alias lm='la | more'
+  #}}}
+  # GIT {{{
+    alias Gbranch="git branch"
+    alias Gcommit="git commit -am"
+    alias Gcommitamend="git commit --amend -m"
+    alias Gclone="git clone"
+    alias Gaddall="git add -A"
+    alias Gadd="git add"
+    alias Gcheckout="git checkout"
+    alias Gremove="git rm"
+    alias Gblame="git blame"
+    alias Gstatus="git status"
+    alias Gpull="git pull origin"
+    alias Gpush="git push origin"
+    Gonfire(){
+      check_onfire=`git branch | grep onfire`
+      [[ -z $check_hotfix ]] && git branch -f onfire origin/onfire
+      git checkout -b onfire
+    }
+    Gfeature(){
+      check_onfire=`git branch | grep feature`
+      [[ -z $check_hotfix ]] && git checkout -b feature --track origin/onfire
+    }
+    Gmergetool="git mergetool"
+    Gmergefeature(){
+      if [[ $# == 0 ]]; then
+        echo "Usage: Gmergefeature \"<comments>\""
+        return 0
+      fi
+      check_onfire=`git branch | grep onfire`
+      if [[ -z $check_hotfix ]]; then
+        git checkout onfire
+        git difftool -g -d onfire..feature
+        git merge --no-ff feature
+        git branch -d feature
+        git commit -am "${1}"
+      else
+        echo "No onfire branch founded."
+      fi
+    }
+    alias Ghotfix="git ckeckout -b hotfix master"
+    Gmergehotfix(){
+      if [[ $# == 0 ]]; then
+        echo "Usage: Gmergehotfix <number>"
+        return 0
+      fi
+      check_hotfix=`git branch | grep hotfix`
+      if [[ -z $check_hotfix ]]; then
+        # get upstream branch
+        git checkout -b onfire origin
+        git merge --no-ff hotfix
+        git commit -am "hotfix: v${1}"
+        # get master branch
+        git checkout -b master origin
+        git merge hotfix
+        git commit -am "Hotfix: v${1}"
+        git branch -d hotfix
+        git tag -a $1 -m "Release: v${1}"
+        git push --tags
+      else
+        echo "No hotfix branch founded."
+      fi
+    }
+    Grelease(){
+      if [[ $# == 0 ]]; then
+        echo "Usage: Grelease <number>"
+        exit 1
+      fi
+      git checkout origin/master
+      git merge --no-ff origin/onfire
+      git branch -d onfire
+      git tag -a $1 -m "Release: v${1}"
+      git push --tags
+    }
+    Gremovebranchs(){
+      if [[ $# == 0 ]]; then
+        echo "Usage: Gremovebranchs \"<branchName>\""
+        return 0
+      fi
+      git branch -d $1
+      git push origin --delete $1
+    }
+    Gconfig(){
+      local NAME=`git config --global user.name`
+      local EMAIL=`git config --global user.email`
+      local USER=`git config --global github.user`
+      local EDITOR=`git config --global core.editor`
+
+      [[ -z $NAME ]] && read -p "Nome: " NAME
+      [[ -z $EMAIL ]] && read -p "Email: " EMAIL
+      [[ -z $USER ]] && read -p "Username: " USER
+      [[ -z $EDITOR ]] && read -p "Editor: " EDITOR
+
+      git config --global user.name $NAME
+      git config --global user.email $EMAIL
+      git config --global github.user $USER
+      git config --global color.ui true
+      git config --global color.status auto
+      git config --global color.branch auto
+      git config --global color.diff auto
+      git config --global diff.color true
+      git config --global push.default matching
+      git config --global core.editor $EDITOR
+      if which kdiff3 &>/dev/null; then
+        git config --global diff.guitool kdiff3
+        git config --global merge.tool kdiff3
+      elif which meld &>/dev/null; then
+        git config --global diff.guitool meld
+        git config --global merge.tool meld
+      fi
+      git config --global --list
+    }
   #}}}
 #}}}
 ## FUNCTIONS {{{
