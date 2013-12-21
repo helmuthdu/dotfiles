@@ -58,7 +58,7 @@ _isroot=false
   export PATH=/usr/local/bin:$PATH
   #Ruby support
   GEM_DIR=$(ruby -rubygems -e 'puts Gem.user_dir')/bin
-  if [[ -d $GEM_DIR ]]; then
+  if [[ -d "$GEM_DIR" ]]; then
     export PATH=$GEM_DIR:$PATH
   fi
   ## EDITOR #{{{
