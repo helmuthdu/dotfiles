@@ -57,9 +57,11 @@ _isroot=false
 ## EXPORTS {{{
   export PATH=/usr/local/bin:$PATH
   #Ruby support
-  GEM_DIR=$(ruby -rubygems -e 'puts Gem.user_dir')/bin
-  if [[ -d "$GEM_DIR" ]]; then
-    export PATH=$GEM_DIR:$PATH
+  if which ruby &>/dev/null; then
+    GEM_DIR=$(ruby -rubygems -e 'puts Gem.user_dir')/bin
+    if [[ -d "$GEM_DIR" ]]; then
+      export PATH=$GEM_DIR:$PATH
+    fi
   fi
   ## EDITOR #{{{
     if which vim &>/dev/null; then
