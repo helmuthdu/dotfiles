@@ -161,7 +161,7 @@ _isroot=false
 #}}}
 ## FUNCTIONS {{{
   # SUPERGIT {{{
-    sit(){
+    sgit(){
       # By helmuthdu
       usage(){
         echo "Usage: $0 [options]"
