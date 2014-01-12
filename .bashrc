@@ -158,125 +158,174 @@ _isroot=false
     alias la='ll -A'
     alias lm='la | more'
   #}}}
-  # GIT {{{
-    alias Gbranch="git branch"
-    alias Gcommit="git commit -am"
-    alias Gcommitamend="git commit --amend -m"
-    alias Gclone="git clone"
-    alias Gaddall="git add -A"
-    alias Gadd="git add"
-    alias Gcheckout="git checkout"
-    alias Gremove="git rm"
-    alias Gblame="git blame"
-    alias Gstatus="git status"
-    alias Gpull="git pull origin"
-    alias Gpush="git push origin"
-    Gonfire(){
-      check_onfire=`git branch | grep onfire`
-      [[ -z $check_hotfix ]] && git branch -f onfire origin/onfire
-      git checkout -b onfire
-    }
-    Gfeature(){
-      check_onfire=`git branch | grep feature`
-      [[ -z $check_hotfix ]] && git checkout -b feature --track origin/onfire
-    }
-    Gmergetool="git mergetool"
-    Gmergefeature(){
-      if [[ $# == 0 ]]; then
-        echo "Usage: Gmergefeature \"<comments>\""
-        return 0
-      fi
-      check_onfire=`git branch | grep onfire`
-      if [[ -z $check_hotfix ]]; then
-        git checkout onfire
-        git difftool -g -d onfire..feature
-        git merge --no-ff feature
-        git branch -d feature
-        git commit -am "${1}"
-      else
-        echo "No onfire branch founded."
-      fi
-    }
-    alias Ghotfix="git ckeckout -b hotfix master"
-    Gmergehotfix(){
-      if [[ $# == 0 ]]; then
-        echo "Usage: Gmergehotfix <number>"
-        return 0
-      fi
-      check_hotfix=`git branch | grep hotfix`
-      if [[ -z $check_hotfix ]]; then
-        # get upstream branch
-        git checkout -b onfire origin
-        git merge --no-ff hotfix
-        git commit -am "hotfix: v${1}"
-        # get master branch
-        git checkout -b master origin
-        git merge hotfix
-        git commit -am "Hotfix: v${1}"
-        git branch -d hotfix
-        git tag -a $1 -m "Release: v${1}"
-        git push --tags
-      else
-        echo "No hotfix branch founded."
-      fi
-    }
-    Grelease(){
-      if [[ $# == 0 ]]; then
-        echo "Usage: Grelease <number>"
-        exit 1
-      fi
-      git checkout origin/master
-      git merge --no-ff origin/onfire
-      git branch -d onfire
-      git tag -a $1 -m "Release: v${1}"
-      git push --tags
-    }
-    Gremovebranchs(){
-      if [[ $# == 0 ]]; then
-        echo "Usage: Gremovebranchs \"<branchName>\""
-        return 0
-      fi
-      git branch -d $1
-      git push origin --delete $1
-    }
-    Gconfig(){
-      local NAME=`git config --global user.name`
-      local EMAIL=`git config --global user.email`
-      local USER=`git config --global github.user`
-      local EDITOR=`git config --global core.editor`
-
-      [[ -z $NAME ]] && read -p "Nome: " NAME
-      [[ -z $EMAIL ]] && read -p "Email: " EMAIL
-      [[ -z $USER ]] && read -p "Username: " USER
-      [[ -z $EDITOR ]] && read -p "Editor: " EDITOR
-
-      git config --global user.name $NAME
-      git config --global user.email $EMAIL
-      git config --global github.user $USER
-      git config --global color.ui true
-      git config --global color.status auto
-      git config --global color.branch auto
-      git config --global color.diff auto
-      git config --global diff.color true
-      git config --global push.default matching
-      git config --global core.editor $EDITOR
-      if which kdiff3 &>/dev/null; then
-        git config --global diff.guitool kdiff3
-        git config --global merge.tool kdiff3
-      elif which meld &>/dev/null; then
-        git config --global diff.guitool meld
-        git config --global merge.tool meld
-      fi
-      git config --global --list
-    }
-  #}}}
 #}}}
 ## FUNCTIONS {{{
-  ## TOP 10 COMMANDS {{{
+  # SUPERGIT {{{
+    sit(){
+      # By helmuthdu
+      usage(){
+        echo "Usage: $0 [options]"
+        echo "au| autoconfig                       :Autoconfigure git options"
+        echo "a | add [--all] || \"<files>\"         :Add git files"
+        echo "c | commit [--undo] || \"<text>\"      :Add git files"
+        echo "b | branch [feature, hotfix, <any>]  :Add/Change Branch"
+        echo "d | delete [branch] <name>           :Delete Branch"
+        echo "l | log                              :Display Log"
+        echo "m | merge [feature, hotfix, <any>]   :Merge branches"
+        echo "p | push <branch>                    :Push files"
+        echo "P | pull <branch>                    :Pull files"
+        echo "r | release                          :Merge devel branch on master"
+        echo ""
+      }
+      if [[ $# -eq 0 ]]; then
+        usage
+      else
+        check_onfire=`git branch | grep onfire`
+        check_hotfix=`git branch | grep hotfix`
+      fi
+      case $1 in
+        au | autoconfig)
+          local NAME=`git config --global user.name`
+          local EMAIL=`git config --global user.email`
+          local USER=`git config --global github.user`
+          local EDITOR=`git config --global core.editor`
+
+          [[ -z $NAME ]] && read -p "Nome: " NAME
+          [[ -z $EMAIL ]] && read -p "Email: " EMAIL
+          [[ -z $USER ]] && read -p "Username: " USER
+          [[ -z $EDITOR ]] && read -p "Editor: " EDITOR
+
+          git config --global user.name $NAME
+          git config --global user.email $EMAIL
+          git config --global github.user $USER
+          git config --global color.ui true
+          git config --global color.status auto
+          git config --global color.branch auto
+          git config --global color.diff auto
+          git config --global diff.color true
+          git config --global push.default matching
+          git config --global core.editor $EDITOR
+          git config --global alias.undo-commit 'reset --soft HEAD^'
+          if which meld &>/dev/null; then
+            git config --global diff.guitool meld
+            git config --global merge.tool meld
+          elif which kdiff3 &>/dev/null; then
+            git config --global diff.guitool kdiff3
+            git config --global merge.tool kdiff3
+          fi
+          git config --global --list
+          ;;
+        a | add)
+          if [[ $2 == --all ]]; then
+            git add -A
+          else
+            git add $2
+          fi
+          ;;
+        c | commit )
+          if [[ $2 == --undo ]]; then
+            git reset --soft HEAD^
+          else
+            git commit -am "$2"
+          fi
+          ;;
+        b | branch )
+          case $2 in
+            feature)
+              [[ -z $check_onfire ]] && git checkout -b feature --track origin/onfire
+              ;;
+            hotfix)
+              git ckeckout -b hotfix master
+              ;;
+            *)
+              check_branch=`git branch | grep $2`
+              [[ -z $check_branch ]] && git branch -f $2 origin/$2
+              git checkout -b $2
+              ;;
+          esac
+          ;;
+        d | delete)
+          case $2 in
+            branch)
+              git branch -d $3
+              git push origin --delete $3
+              ;;
+            *)
+              echo "Invalid argument"
+              ;;
+          esac
+          ;;
+        l | log )
+          git log
+          ;;
+        m | merge )
+          case $2 in
+            --fix)
+              git mergetool
+              ;;
+            feature)
+              if [[ -z $check_onfire ]]; then
+                git checkout onfire
+                git difftool -g -d onfire..feature
+                git merge --no-ff feature
+                git branch -d feature
+                git commit -am "${3}"
+              else
+                echo "No onfire branch founded."
+              fi
+              ;;
+            hotfix)
+              if [[ -z $check_hotfix ]]; then
+                # get upstream branch
+                git checkout -b onfire origin
+                git merge --no-ff hotfix
+                git commit -am "hotfix: v${3}"
+                # get master branch
+                git checkout -b master origin
+                git merge hotfix
+                git commit -am "Hotfix: v${3}"
+                git branch -d hotfix
+                git tag -a $3 -m "Release: v${3}"
+                git push --tags
+              else
+                echo "No hotfix branch founded."
+              fi
+              ;;
+            *)
+              check_branch=`git branch | grep $2`
+              if [[ -z $check_branch ]]; then
+                git checkout -b master origin
+                git difftool -g -d master..$2
+                git merge --no-ff $2
+                git branch -d $2
+                git commit -am "${3}"
+              else
+                echo "No onfire branch founded."
+              fi
+              ;;
+          esac
+          ;;
+        p | push )
+          git push origin $2
+          ;;
+        P | pull )
+          git pull origin $2
+          ;;
+        r | release )
+          git checkout origin/master
+          git merge --no-ff origin/onfire
+          git branch -d onfire
+          git tag -a $2 -m "Release: v${2}"
+          git push --tags
+          ;;
+      esac
+    }
+  #}}}
+  # TOP 10 COMMANDS {{{
     # copyright 2007 - 2010 Christopher Bratusek
     top10() { history | awk '{a[$2]++ } END{for(i in a){print a[i] " " i}}' | sort -rn | head; }
   #}}}
-  ## UP {{{
+  # UP {{{
     # Goes up many dirs as the number passed as argument, if none goes up by 1 by default
     up() {
       local d=""
@@ -291,7 +340,7 @@ _isroot=false
       cd $d
     }
   #}}}
-  ## ARCHIVE EXTRACTOR {{{
+  # ARCHIVE EXTRACTOR {{{
     extract() {
       clrstart="\033[1;34m"  #color codes
       clrend="\033[0m"
@@ -377,7 +426,7 @@ _isroot=false
       esac
     }
   #}}}
-  ## ARCHIVE COMPRESS {{{
+  # ARCHIVE COMPRESS {{{
     compress() {
       if [[ -n "$1" ]]; then
         FILE=$1
@@ -394,7 +443,7 @@ _isroot=false
       fi
     }
   #}}}
-  ## CONVERT TO ISO {{{
+  # CONVERT TO ISO {{{
     to_iso () {
       if [[ $# == 0 || $1 == "--help" || $1 == "-h" ]]; then
         echo -e "Converts raw, bin, cue, ccd, img, mdf, nrg cd/dvd image files to ISO image file.\nUsage: to_iso file1 file2..."
@@ -422,12 +471,12 @@ _isroot=false
       done
     }
   #}}}
-  ## REMIND ME, ITS IMPORTANT! {{{
+  # REMIND ME, ITS IMPORTANT! {{{
     # usage: remindme <time> <text>
     # e.g.: remindme 10m "omg, the pizza"
     remindme() { sleep $1 && zenity --info --text "$2" & }
   #}}}
-  ## SIMPLE CALCULATOR #{{{
+  # SIMPLE CALCULATOR #{{{
     # usage: calc <equation>
     calc() {
       if which bc &>/dev/null; then
@@ -437,7 +486,7 @@ _isroot=false
       fi
     }
   #}}}
-  ## FILE & STRINGS RELATED FUNCTIONS {{{
+  # FILE & STRINGS RELATED FUNCTIONS {{{
     ## Find a file with a pattern in name {{{
       ff() { find . -type f -iname '*'$*'*' -ls ; }
     #}}}
@@ -486,7 +535,7 @@ _isroot=false
       }
     #}}}
   #}}}
-  ## SYSTEMD SUPPORT {{{
+  # SYSTEMD SUPPORT {{{
     if which systemctl &>/dev/null; then
       start() {
         sudo systemctl start $1.service
