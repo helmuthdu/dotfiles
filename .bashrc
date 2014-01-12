@@ -160,29 +160,23 @@ _isroot=false
   #}}}
 #}}}
 ## FUNCTIONS {{{
-  # SUPERGIT {{{
-    sgit(){
+  # GITPLUS {{{
+    gitp(){
       # By helmuthdu
       usage(){
         echo "Usage: $0 [options]"
-        echo "au| autoconfig                       :Autoconfigure git options"
-        echo "a | add [--all] || \"<files>\"         :Add git files"
-        echo "c | commit [--undo] || \"<text>\"      :Add git files"
-        echo "b | branch [feature, hotfix, <any>]  :Add/Change Branch"
-        echo "d | delete [branch] <name>           :Delete Branch"
-        echo "l | log                              :Display Log"
-        echo "m | merge [feature, hotfix, <any>]   :Merge branches"
-        echo "p | push <branch>                    :Push files"
-        echo "P | pull <branch>                    :Pull files"
-        echo "r | release                          :Merge devel branch on master"
-        echo ""
+        echo " au, [autoconfig]                  # Autoconfigure git options"
+        echo "  a, [add=FILES] [--all]           # Add git files"
+        echo "  c, [commit=TEXT] [--undo]        # Add git files"
+        echo "  b, [branch=feature,hotfix,*]     # Add/Change Branch"
+        echo "  d, [delete] <branch> <name>      # Delete Branch"
+        echo "  l, [log]                         # Display Log"
+        echo "  m, [merge=feature,hotfix,*]      # Merge branches"
+        echo "  p, [push=BRANCH]                 # Push files"
+        echo "  P, [pull=BRANCH]                 # Pull files"
+        echo "  r, [release]                     # Merge devel branch on master"#}}}
+        return 1
       }
-      if [[ $# -eq 0 ]]; then
-        usage
-      else
-        check_onfire=`git branch | grep onfire`
-        check_hotfix=`git branch | grep hotfix`
-      fi
       case $1 in
         au | autoconfig)
           local NAME=`git config --global user.name`
@@ -230,9 +224,11 @@ _isroot=false
           fi
           ;;
         b | branch )
+          check_branch=`git branch | grep $2`
           case $2 in
             feature)
-              [[ -z $check_onfire ]] && git checkout -b feature --track origin/onfire
+              [[ -z $check_branch ]] && git branch -f onfire origin/onfire
+              git checkout -b feature --track origin/onfire
               ;;
             hotfix)
               git ckeckout -b hotfix master
@@ -259,12 +255,13 @@ _isroot=false
           git log
           ;;
         m | merge )
+          check_branch=`git branch | grep $2`
           case $2 in
             --fix)
               git mergetool
               ;;
             feature)
-              if [[ -z $check_onfire ]]; then
+              if [[ -z $check_branch ]]; then
                 git checkout onfire
                 git difftool -g -d onfire..feature
                 git merge --no-ff feature
@@ -275,7 +272,7 @@ _isroot=false
               fi
               ;;
             hotfix)
-              if [[ -z $check_hotfix ]]; then
+              if [[ -z $check_branch ]]; then
                 # get upstream branch
                 git checkout -b onfire origin
                 git merge --no-ff hotfix
@@ -292,7 +289,6 @@ _isroot=false
               fi
               ;;
             *)
-              check_branch=`git branch | grep $2`
               if [[ -z $check_branch ]]; then
                 git checkout -b master origin
                 git difftool -g -d master..$2
@@ -318,6 +314,8 @@ _isroot=false
           git tag -a $2 -m "Release: v${2}"
           git push --tags
           ;;
+        *)
+          usage
       esac
     }
   #}}}
