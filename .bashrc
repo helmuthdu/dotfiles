@@ -21,21 +21,98 @@ _isroot=false
 
     export TERM='xterm-256color'
 
-    B='\[\e[1;38;5;33m\]'
+     B='\[\e[1;38;5;33m\]'
     LB='\[\e[1;38;5;81m\]'
     GY='\[\e[1;38;5;242m\]'
-    G='\[\e[1;38;5;82m\]'
-    P='\[\e[1;38;5;161m\]'
+     G='\[\e[1;38;5;82m\]'
+     P='\[\e[1;38;5;161m\]'
     PP='\[\e[1;38;5;93m\]'
-    R='\[\e[1;38;5;196m\]'
-    Y='\[\e[1;38;5;214m\]'
-    W='\[\e[0m\]'
+     R='\[\e[1;38;5;196m\]'
+     Y='\[\e[1;38;5;214m\]'
+     W='\[\e[0m\]'
 
-    if ! $_isroot; then
-      export PS1="$GY[$Y\u$GY@$P\h$W:$B\W$GY]$W\$ "
-    else
-      export PS1="$GY[$R\u$GY@$P\h$W:$B\W$GY]$W# "
-    fi
+    get_prompt_symbol() {
+      [[ $UID == 0 ]] && echo "#" || echo "\$"
+    }
+
+    get_git_branch() {
+      # On branches, this will return the branch name
+      # On non-branches, (no branch)
+      ref="$(git symbolic-ref HEAD 2> /dev/null | sed -e 's/refs\/heads\///')"
+      [[ -n $ref ]] && echo "$ref" || echo "(no branch)"
+    }
+
+    is_branch1_behind_branch2 () {
+      # Find the first log (if any) that is in branch1 but not branch2
+      first_log="$(git log $1..$2 -1 2> /dev/null)"
+      # Exit with 0 if there is a first log, 1 if there is not
+      [[ -n "$first_log" ]]
+    }
+
+    branch_exists () {
+      # List remote branches | # Find our branch and exit with 0 or 1 if found/not found
+      git branch --remote 2> /dev/null | grep --quiet "$1"
+    }
+
+    parse_git_ahead () {
+      # Grab the local and remote branch
+      branch="$(get_git_branch)"
+      remote_branch=origin/"$branch"
+      # If the remote branch is behind the local branch
+      # or it has not been merged into origin (remote branch doesn't exist)
+      (is_branch1_behind_branch2 $remote_branch $branch || ! branch_exists $remote_branch) && echo 1
+    }
+
+    parse_git_behind () {
+      # Grab the branch
+      branch=$(get_git_branch)
+      remote_branch=origin/$branch
+      # If the local branch is behind the remote branch
+      is_branch1_behind_branch2 $branch $remote_branch && echo 1
+    }
+
+    parse_git_dirty () {
+      # If the git status has *any* changes (i.e. dirty)
+      [[ -n "$(git status --porcelain 2> /dev/null)" ]] && echo 1
+    }
+
+    function get_git_status() {
+      # Grab the git dirty and git behind
+      dirty_branch="$(parse_git_dirty)"
+      branch_ahead="$(parse_git_ahead)"
+      branch_behind="$(parse_git_behind)"
+
+      # Iterate through all the cases and if it matches, then echo
+      if [[ $dirty_branch == 1 && $branch_ahead == 1 && $branch_behind == 1 ]]; then
+        echo "⬢"
+      elif [[ $dirty_branch == 1 && $branch_ahead == 1 ]]; then
+        echo "▲"
+      elif [[ $dirty_branch == 1 && $branch_behind == 1 ]]; then
+        echo "▼"
+      elif [[ $branch_ahead == 1 && $branch_behind == 1 ]]; then
+        echo "⬡"
+      elif [[ $branch_ahead == 1 ]]; then
+        echo "△"
+      elif [[ $branch_behind == 1 ]]; then
+        echo "▽"
+      elif [[ $dirty_branch == 1 ]]; then
+        echo "*"
+      fi
+    }
+
+    get_git_info () {
+      # Grab the branch
+      branch="$(git branch --no-color 2> /dev/null | awk '{print $2}')"
+      # If there are any branches
+      if [[ -n $branch ]]; then
+        # Add on the git status
+        output=$(get_git_status)
+        # Echo our output
+        echo -e -n " $branch$output"
+      fi
+    }
+
+    export PS1="$GY[$Y\u$GY@$P\h$GY:$B\W$LB\$(get_git_info)$GY]$W\$(get_prompt_symbol) "
   else
     export TERM='xterm-color'
   fi
