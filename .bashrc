@@ -140,6 +140,9 @@ _isroot=false
       export PATH=$GEM_DIR:$PATH
     fi
   fi
+  if which google-chrome-stable &>/dev/null; then
+    export CHROME_BIN=/usr/bin/google-chrome-stable
+  fi
   ## EDITOR #{{{
     if which vim &>/dev/null; then
       export EDITOR="vim"
