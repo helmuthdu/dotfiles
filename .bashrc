@@ -38,8 +38,8 @@ _isroot=false
     get_git_branch() {
       # On branches, this will return the branch name
       # On non-branches, (no branch)
-      ref="$(git symbolic-ref HEAD 2> /dev/null | sed -e 's/refs\/heads\///')"
-      [[ -n $ref ]] && echo "$ref" || echo "(no branch)"
+      ref="$(git symbolic-ref HEAD 2> /dev/null | sed -e 's/^.*\///')"
+      [[ -n $ref ]] && echo "$ref"
     }
 
     is_branch1_behind_branch2 () {
@@ -102,13 +102,13 @@ _isroot=false
 
     get_git_info () {
       # Grab the branch
-      branch="$(git branch --no-color 2> /dev/null | awk '{print $2}')"
+      branch=$(get_git_branch)
       # If there are any branches
       if [[ -n $branch ]]; then
         # Add on the git status
         output=$(get_git_status)
         # Echo our output
-        echo -e -n " $branch$output"
+        echo " $branch$output"
       fi
     }
 
@@ -253,7 +253,7 @@ _isroot=false
         echo "  l, [log]                         # Display Log"
         echo "  m, [merge=feature,hotfix,*]      # Merge branches"
         echo "  p, [push=BRANCH]                 # Push files"
-        echo "  P, [pull=BRANCH]                 # Pull files"
+        echo "  P, [pull=BRANCH] [--foce]        # Pull files"
         echo "  r, [release]                     # Merge devel branch on master"
         return 1
       }
@@ -316,7 +316,7 @@ _isroot=false
             *)
               check_branch=`git branch | grep $2`
               [[ -z $check_branch ]] && git branch -f $2 origin/$2
-              git checkout -b $2
+              git checkout $2
               ;;
           esac
           ;;
@@ -385,7 +385,12 @@ _isroot=false
           git push origin $2
           ;;
         P | pull )
-          git pull origin $2
+          if [[ $2 == --force ]]; then
+            git fetch --all
+            git reset --hard origin/master
+          else
+            git pull origin $2
+          fi
           ;;
         r | release )
           git checkout origin/master
