@@ -296,19 +296,18 @@ _isroot=false
             git add $2
           fi
           ;;
-        c | commit )
-          if [[ $2 == --undo ]]; then
-            git reset --soft HEAD^
-          else
-            git commit -am "$2"
-          fi
-          ;;
         b | branch )
           check_branch=`git branch | grep $2`
           case $2 in
             feature)
-              [[ -z $check_branch ]] && git branch -f onfire origin/onfire
-              git checkout -b feature --track origin/onfire
+              check_devel_branch=`git branch | grep devel`
+              if [[ -z $check_devel_branch ]]; then
+                echo "creating devel branch..."
+                git branch devel
+                git push origin devel
+              fi
+              [[ -z $check_branch ]] && git branch -f devel origin/devel
+              git checkout -b feature --track origin/devel
               ;;
             hotfix)
               git ckeckout -b hotfix master
@@ -320,10 +319,17 @@ _isroot=false
               ;;
           esac
           ;;
+        c | commit )
+          if [[ $2 == --undo ]]; then
+            git reset --soft HEAD^
+          else
+            git commit -am "$2"
+          fi
+          ;;
         d | delete)
           case $2 in
             branch)
-              git branch -d $3
+              git branch -D $3
               git push origin --delete $3
               ;;
             *)
@@ -342,19 +348,19 @@ _isroot=false
               ;;
             feature)
               if [[ -z $check_branch ]]; then
-                git checkout onfire
-                git difftool -g -d onfire..feature
+                git checkout devel
+                git difftool -g -d devel..feature
                 git merge --no-ff feature
                 git branch -d feature
                 git commit -am "${3}"
               else
-                echo "No onfire branch founded."
+                echo "No devel branch founded."
               fi
               ;;
             hotfix)
               if [[ -z $check_branch ]]; then
                 # get upstream branch
-                git checkout -b onfire origin
+                git checkout -b devel origin
                 git merge --no-ff hotfix
                 git commit -am "hotfix: v${3}"
                 # get master branch
@@ -376,7 +382,7 @@ _isroot=false
                 git branch -d $2
                 git commit -am "${3}"
               else
-                echo "No onfire branch founded."
+                echo "No devel branch founded."
               fi
               ;;
           esac
@@ -394,8 +400,8 @@ _isroot=false
           ;;
         r | release )
           git checkout origin/master
-          git merge --no-ff origin/onfire
-          git branch -d onfire
+          git merge --no-ff origin/devel
+          git branch -d devel
           git tag -a $2 -m "Release: v${2}"
           git push --tags
           ;;
