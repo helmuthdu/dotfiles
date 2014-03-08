@@ -240,8 +240,8 @@ _isroot=false
   #}}}
 #}}}
 ## FUNCTIONS {{{
-  # GITPLUS {{{
-    gitp(){
+  # JEDI GIT COMMANDS {{{
+    jit(){
       # By helmuthdu
       usage(){
         echo "Usage: $0 [options]"
