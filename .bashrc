@@ -306,7 +306,6 @@ _isroot=false
                 git branch devel
                 git push origin devel
               fi
-              [[ -z $check_branch ]] && git branch -f devel origin/devel
               git checkout -b feature --track origin/devel
               ;;
             hotfix)
@@ -317,7 +316,11 @@ _isroot=false
               ;;
             *)
               check_branch=`git branch | grep $2`
-              [[ -z $check_branch ]] && git branch -f $2 origin/$2
+              if [[ -z $check_devel_branch ]]; then
+                echo "creating $2 branch..."
+                git branch $2
+                git push origin $2
+              fi
               git checkout $2
               ;;
           esac
