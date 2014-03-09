@@ -310,7 +310,10 @@ _isroot=false
               git checkout -b feature --track origin/devel
               ;;
             hotfix)
-              git ckeckout -b hotfix master
+              git checkout -b hotfix master
+              ;;
+            master)
+              git checkout master
               ;;
             *)
               check_branch=`git branch | grep $2`
@@ -347,7 +350,7 @@ _isroot=false
               git mergetool
               ;;
             feature)
-              if [[ -z $check_branch ]]; then
+              if [[ -n $check_branch ]]; then
                 git checkout devel
                 git difftool -g -d devel..feature
                 git merge --no-ff feature
@@ -358,7 +361,7 @@ _isroot=false
               fi
               ;;
             hotfix)
-              if [[ -z $check_branch ]]; then
+              if [[ -n $check_branch ]]; then
                 # get upstream branch
                 git checkout -b devel origin
                 git merge --no-ff hotfix
@@ -375,7 +378,7 @@ _isroot=false
               fi
               ;;
             *)
-              if [[ -z $check_branch ]]; then
+              if [[ -n $check_branch ]]; then
                 git checkout -b master origin
                 git difftool -g -d master..$2
                 git merge --no-ff $2
