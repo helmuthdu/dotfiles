@@ -133,6 +133,7 @@ _isroot=false
 #}}}
 ## EXPORTS {{{
   export PATH=/usr/local/bin:$PATH
+  export _JAVA_OPTIONS='-Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel'
   #Ruby support
   if which ruby &>/dev/null; then
     GEM_DIR=$(ruby -rubygems -e 'puts Gem.user_dir')/bin
