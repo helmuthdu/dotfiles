@@ -31,88 +31,22 @@ _isroot=false
      Y='\[\e[1;38;5;214m\]'
      W='\[\e[0m\]'
 
-    get_prompt_symbol() {
-      [[ $UID == 0 ]] && echo "#" || echo "\$"
-    }
+    if [[ $PS1 && -f /usr/share/git/git-prompt.sh ]]; then
+      source /usr/share/git/completion/git-completion.bash
+      source /usr/share/git/git-prompt.sh
 
-    get_git_branch() {
-      # On branches, this will return the branch name
-      # On non-branches, (no branch)
-      ref="$(git symbolic-ref HEAD 2> /dev/null | sed -e 's/^.*\///')"
-      [[ -n $ref ]] && echo "$ref"
-    }
+      export GIT_PS1_SHOWDIRTYSTATE=1
+      export GIT_PS1_SHOWSTASHSTATE=1
+      export GIT_PS1_SHOWUNTRACKEDFILES=0
 
-    is_branch1_behind_branch2 () {
-      # Find the first log (if any) that is in branch1 but not branch2
-      first_log="$(git log $1..$2 -1 2> /dev/null)"
-      # Exit with 0 if there is a first log, 1 if there is not
-      [[ -n "$first_log" ]]
-    }
+      get_prompt_symbol() {
+        [[ $UID == 0 ]] && echo "#" || echo "\$"
+      }
 
-    branch_exists () {
-      # List remote branches | # Find our branch and exit with 0 or 1 if found/not found
-      git branch --remote 2> /dev/null | grep --quiet "$1"
-    }
-
-    parse_git_ahead () {
-      # Grab the local and remote branch
-      branch="$(get_git_branch)"
-      remote_branch=origin/"$branch"
-      # If the remote branch is behind the local branch
-      # or it has not been merged into origin (remote branch doesn't exist)
-      (is_branch1_behind_branch2 $remote_branch $branch || ! branch_exists $remote_branch) && echo 1
-    }
-
-    parse_git_behind () {
-      # Grab the branch
-      branch=$(get_git_branch)
-      remote_branch=origin/$branch
-      # If the local branch is behind the remote branch
-      is_branch1_behind_branch2 $branch $remote_branch && echo 1
-    }
-
-    parse_git_dirty () {
-      # If the git status has *any* changes (i.e. dirty)
-      [[ -n "$(git status --porcelain 2> /dev/null)" ]] && echo 1
-    }
-
-    function get_git_status() {
-      # Grab the git dirty and git behind
-      dirty_branch="$(parse_git_dirty)"
-      branch_ahead="$(parse_git_ahead)"
-      branch_behind="$(parse_git_behind)"
-
-      # Iterate through all the cases and if it matches, then echo
-      if [[ $dirty_branch == 1 && $branch_ahead == 1 && $branch_behind == 1 ]]; then
-        echo "⬢"
-      elif [[ $dirty_branch == 1 && $branch_ahead == 1 ]]; then
-        echo "▲"
-      elif [[ $dirty_branch == 1 && $branch_behind == 1 ]]; then
-        echo "▼"
-      elif [[ $branch_ahead == 1 && $branch_behind == 1 ]]; then
-        echo "⬡"
-      elif [[ $branch_ahead == 1 ]]; then
-        echo "△"
-      elif [[ $branch_behind == 1 ]]; then
-        echo "▽"
-      elif [[ $dirty_branch == 1 ]]; then
-        echo "*"
-      fi
-    }
-
-    get_git_info () {
-      # Grab the branch
-      branch=$(get_git_branch)
-      # If there are any branches
-      if [[ -n $branch ]]; then
-        # Add on the git status
-        output=$(get_git_status)
-        # Echo our output
-        echo " $branch$output"
-      fi
-    }
-
-    export PS1="$GY[$Y\u$GY@$P\h$GY:$B\W$LB\$(get_git_info)$GY]$W\$(get_prompt_symbol) "
+      export PS1="$GY[$Y\u$GY@$P\h$GY:$B\W\$(__git_ps1 \"$GY|$LB%s\")$GY]$W\$(get_prompt_symbol) "
+    else
+      export PS1="$GY[$Y\u$GY@$P\h$GY:$B\W$W "
+    fi
   else
     export TERM='xterm-color'
   fi
@@ -133,13 +67,15 @@ _isroot=false
 #}}}
 ## EXPORTS {{{
   export PATH=/usr/local/bin:$PATH
-  export _JAVA_OPTIONS='-Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel'
   #Ruby support
   if which ruby &>/dev/null; then
     GEM_DIR=$(ruby -rubygems -e 'puts Gem.user_dir')/bin
     if [[ -d "$GEM_DIR" ]]; then
       export PATH=$GEM_DIR:$PATH
     fi
+  fi
+  if [[ -d "$HOME/bin" ]] ; then
+      PATH="$HOME/bin:$PATH"
   fi
   if which google-chrome-stable &>/dev/null; then
     export CHROME_BIN=/usr/bin/google-chrome-stable
@@ -155,7 +91,7 @@ _isroot=false
   #}}}
   ## BASH HISTORY #{{{
     # make multiple shells share the same history file
-    export HISTSIZE=10000           # bash history will save N commands
+    export HISTSIZE=1000            # bash history will save N commands
     export HISTFILESIZE=${HISTSIZE} # bash will remember N commands
     export HISTCONTROL=ignoreboth   # ingore duplicates and spaces
     export HISTIGNORE='&:ls:ll:la:cd:exit:clear:history'
@@ -178,6 +114,19 @@ _isroot=false
 ## ALIAS {{{
   alias freemem='sudo /sbin/sysctl -w vm.drop_caches=3'
   alias enter_matrix='echo -e "\e[32m"; while :; do for i in {1..16}; do r="$(($RANDOM % 2))"; if [[ $(($RANDOM % 5)) == 1 ]]; then if [[ $(($RANDOM % 4)) == 1 ]]; then v+="\e[1m $r   "; else v+="\e[2m $r   "; fi; else v+="     "; fi; done; echo -e "$v"; v=""; done'
+  # GIT_OR_HUB {{{
+    if which hub &>/dev/null; then
+      alias git=hub
+    fi
+  #}}}
+  # AUTOCOLOR {{{
+    alias ls='ls --color=auto'
+    alias dir='dir --color=auto'
+    alias vdir='vdir --color=auto'
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+  #}}}
   # MODIFIED COMMANDS {{{
     alias ..='cd ..'
     alias df='df -h'
@@ -227,39 +176,36 @@ _isroot=false
     if which get_flash_videos &>/dev/null; then
       alias gfv='get_flash_videos -r 720p --subtitles'
     fi
-    if which simple-mtpfs &>/dev/null; then
-      alias android-connect="simple-mtpfs /media/android"
-      alias android-disconnect="fusermount -u /media/android"
-    fi
   #}}}
   # LS {{{
     alias ls='ls -hF --color=auto'
     alias lr='ls -R'                    # recursive ls
     alias ll='ls -alh'
     alias la='ll -A'
-    alias lm='la | more'
+    alias lm='la | less'
   #}}}
 #}}}
 ## FUNCTIONS {{{
-  # JEDI GIT COMMANDS {{{
-    jit(){
+  # BETTER GIT COMMANDS {{{
+    bit() {
       # By helmuthdu
       usage(){
         echo "Usage: $0 [options]"
-        echo " au, [autoconfig]                  # Autoconfigure git options"
-        echo "  a, [add=FILES] [--all]           # Add git files"
-        echo "  c, [commit=TEXT] [--undo]        # Add git files"
-        echo "  b, [branch=feature,hotfix,*]     # Add/Change Branch"
-        echo "  d, [delete] <branch> <name>      # Delete Branch"
-        echo "  l, [log]                         # Display Log"
-        echo "  m, [merge=feature,hotfix,*]      # Merge branches"
-        echo "  p, [push=BRANCH]                 # Push files"
-        echo "  P, [pull=BRANCH] [--foce]        # Pull files"
-        echo "  r, [release]                     # Merge devel branch on master"
+        echo "  --init                                              # Autoconfigure git options"
+        echo "  a, [add] <files> [--all]                            # Add git files"
+        echo "  c, [commit] <text> [--undo]                         # Add git files"
+        echo "  C, [cherry-pick] <number> <url> [branch]            # Cherry-pick commit"
+        echo "  b, [branch] feature|hotfix|<name>                   # Add/Change Branch"
+        echo "  d, [delete] <branch>                                # Delete Branch"
+        echo "  l, [log]                                            # Display Log"
+        echo "  m, [merge] feature|hotfix|<name> <commit>|<version> # Merge branches"
+        echo "  p, [push] <branch>                                  # Push files"
+        echo "  P, [pull] <branch> [--foce]                         # Pull files"
+        echo "  r, [release]                                        # Merge unstable branch on master"
         return 1
       }
       case $1 in
-        au | autoconfig)
+        --init)
           local NAME=`git config --global user.name`
           local EMAIL=`git config --global user.email`
           local USER=`git config --global github.user`
@@ -278,9 +224,12 @@ _isroot=false
           git config --global color.branch auto
           git config --global color.diff auto
           git config --global diff.color true
+          git config --global core.filemode true
           git config --global push.default matching
           git config --global core.editor $EDITOR
-          git config --global alias.undo-commit 'reset --soft HEAD^'
+          git config --global format.signoff true
+          git config --global alias.reset 'reset --soft HEAD^'
+          git config --global alias.graph 'log --graph --oneline --decorate'
           if which meld &>/dev/null; then
             git config --global diff.guitool meld
             git config --global merge.tool meld
@@ -301,13 +250,13 @@ _isroot=false
           check_branch=`git branch | grep $2`
           case $2 in
             feature)
-              check_devel_branch=`git branch | grep devel`
-              if [[ -z $check_devel_branch ]]; then
-                echo "creating devel branch..."
-                git branch devel
-                git push origin devel
+              check_unstable_branch=`git branch | grep unstable`
+              if [[ -z $check_unstable_branch ]]; then
+                echo "creating unstable branch..."
+                git branch unstable
+                git push origin unstable
               fi
-              git checkout -b feature --track origin/devel
+              git checkout -b feature --track origin/unstable
               ;;
             hotfix)
               git checkout -b hotfix master
@@ -317,7 +266,7 @@ _isroot=false
               ;;
             *)
               check_branch=`git branch | grep $2`
-              if [[ -z $check_devel_branch ]]; then
+              if [[ -z $check_unstable_branch ]]; then
                 echo "creating $2 branch..."
                 git branch $2
                 git push origin $2
@@ -333,19 +282,25 @@ _isroot=false
             git commit -am "$2"
           fi
           ;;
+        C | cherry-pick )
+          git checkout -b patch master
+          git pull $2 $3
+          git checkout master
+          git cherry-pick $1
+          git log
+          git branch -D patch
+          ;;
         d | delete)
-          case $2 in
-            branch)
-              git branch -D $3
-              git push origin --delete $3
-              ;;
-            *)
-              echo "Invalid argument"
-              ;;
-          esac
+          check_branch=`git branch | grep $2`
+          if [[ -z $check_branch ]]; then
+            echo "No branch founded."
+          else
+            git branch -D $2
+            git push origin --delete $2
+          fi
           ;;
         l | log )
-          git log
+          git log --graph --oneline --decorate
           ;;
         m | merge )
           check_branch=`git branch | grep $2`
@@ -355,19 +310,19 @@ _isroot=false
               ;;
             feature)
               if [[ -n $check_branch ]]; then
-                git checkout devel
-                git difftool -g -d devel..feature
+                git checkout unstable
+                git difftool -g -d unstable..feature
                 git merge --no-ff feature
                 git branch -d feature
                 git commit -am "${3}"
               else
-                echo "No devel branch founded."
+                echo "No unstable branch founded."
               fi
               ;;
             hotfix)
               if [[ -n $check_branch ]]; then
                 # get upstream branch
-                git checkout -b devel origin
+                git checkout -b unstable origin
                 git merge --no-ff hotfix
                 git commit -am "hotfix: v${3}"
                 # get master branch
@@ -389,7 +344,7 @@ _isroot=false
                 git branch -d $2
                 git commit -am "${3}"
               else
-                echo "No devel branch founded."
+                echo "No unstable branch founded."
               fi
               ;;
           esac
@@ -407,8 +362,8 @@ _isroot=false
           ;;
         r | release )
           git checkout origin/master
-          git merge --no-ff origin/devel
-          git branch -d devel
+          git merge --no-ff origin/unstable
+          git branch -d unstable
           git tag -a $2 -m "Release: v${2}"
           git push --tags
           ;;
@@ -583,13 +538,13 @@ _isroot=false
     }
   #}}}
   # FILE & STRINGS RELATED FUNCTIONS {{{
-    ## Find a file with a pattern in name {{{
+    ## FIND A FILE WITH A PATTERN IN NAME {{{
       ff() { find . -type f -iname '*'$*'*' -ls ; }
     #}}}
-    ## Find a file with pattern $1 in name and Execute $2 on it {{{
+    ## FIND A FILE WITH PATTERN $1 IN NAME AND EXECUTE $2 ON IT {{{
       fe() { find . -type f -iname '*'$1'*' -exec "${2:-file}" {} \;  ; }
     #}}}
-    ## Move filenames to lowercase {{{
+    ## MOVE FILENAMES TO LOWERCASE {{{
       lowercase() {
         for file ; do
           filename=${file##*/}
@@ -608,7 +563,7 @@ _isroot=false
         done
       }
   #}}}
-    ## Swap 2 filenames around, if they exist {{{
+    ## SWAP 2 FILENAMES AROUND, IF THEY EXIST {{{
       #(from Uzi's bashrc).
       swap() {
         local TMPFILE=tmp.$$
@@ -622,7 +577,7 @@ _isroot=false
         mv $TMPFILE "$2"
       }
     #}}}
-    ## Finds directory sizes and lists them for the current directory {{{
+    ## FINDS DIRECTORY SIZES AND LISTS THEM FOR THE CURRENT DIRECTORY {{{
       dirsize () {
         du -shx * .[a-zA-Z0-9_]* 2> /dev/null | egrep '^ *[0-9.]*[MG]' | sort -n > /tmp/list
         egrep '^ *[0-9.]*M' /tmp/list
@@ -630,6 +585,22 @@ _isroot=false
         rm -rf /tmp/list
       }
     #}}}
+    ## FIND AND REMOVED EMPTY DIRECTORIES {{{
+      fared() {
+        read -p "Delete all empty folders recursively [y/N]: " OPT
+        [[ $OPT == y ]] && find . -type d -empty -exec rm -fr {} \; &> /dev/null
+      }
+    #}}}
+    ## FIND AND REMOVED ALL DOTFILES {{{
+      farad () {
+        read -p "Delete all dotfiles recursively [y/N]: " OPT
+        [[ $OPT == y ]] && find . -name '.*' -type f -exec rm -rf {} \;
+      }
+    #}}}
+
+  #}}}
+  # ENTER AND LIST DIRECTORY{{{
+    function cd() { builtin cd -- "$@" && { [ "$PS1" = "" ] || ls -hrt --color; }; }
   #}}}
   # SYSTEMD SUPPORT {{{
     if which systemctl &>/dev/null; then
