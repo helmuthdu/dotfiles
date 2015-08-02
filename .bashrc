@@ -230,6 +230,7 @@ _isroot=false
           git config --global format.signoff true
           git config --global alias.reset 'reset --soft HEAD^'
           git config --global alias.graph 'log --graph --oneline --decorate'
+          git config --global alias.compare 'difftool -y HEAD^ HEAD'
           if which meld &>/dev/null; then
             git config --global diff.guitool meld
             git config --global merge.tool meld
