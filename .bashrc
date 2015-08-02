@@ -1,6 +1,6 @@
 # Archlinux Ultimate Install - .bashrc
 # by helmuthdu
-## OVERALL CONDITIONALS {{{
+# OVERALL CONDITIONALS {{{
 _islinux=false
 [[ "$(uname -s)" =~ Linux|GNU|GNU/* ]] && _islinux=true
 
@@ -13,7 +13,7 @@ _isxrunning=false
 _isroot=false
 [[ $UID -eq 0 ]] && _isroot=true
 # }}}
-## PS1 CONFIG {{{
+# PS1 CONFIG {{{
   [[ -f $HOME/.dircolors ]] && eval $(dircolors -b $HOME/.dircolors)
   if $_isxrunning; then
 
@@ -51,36 +51,49 @@ _isroot=false
     export TERM='xterm-color'
   fi
 #}}}
-## BASH OPTIONS {{{
+# BASH OPTIONS {{{
   shopt -s cdspell                 # Correct cd typos
   shopt -s checkwinsize            # Update windows size on command
   shopt -s histappend              # Append History instead of overwriting file
   shopt -s cmdhist                 # Bash attempts to save all lines of a multiple-line command in the same history entry
   shopt -s extglob                 # Extended pattern
   shopt -s no_empty_cmd_completion # No empty completion
-  ## COMPLETION #{{{
+  # COMPLETION {{{
     complete -cf sudo
     if [[ -f /etc/bash_completion ]]; then
-      . /etc/bash_completion
+      ./etc/bash_completion
     fi
   #}}}
 #}}}
-## EXPORTS {{{
+# CONFIG {{{
   export PATH=/usr/local/bin:$PATH
-  #Ruby support
-  if which ruby &>/dev/null; then
-    GEM_DIR=$(ruby -rubygems -e 'puts Gem.user_dir')/bin
-    if [[ -d "$GEM_DIR" ]]; then
-      export PATH=$GEM_DIR:$PATH
-    fi
-  fi
   if [[ -d "$HOME/bin" ]] ; then
       PATH="$HOME/bin:$PATH"
   fi
-  if which google-chrome-stable &>/dev/null; then
-    export CHROME_BIN=/usr/bin/google-chrome-stable
-  fi
-  ## EDITOR #{{{
+  # RUBY {{{
+    if which ruby &>/dev/null; then
+      GEM_DIR=$(ruby -rubygems -e 'puts Gem.user_dir')/bin
+      if [[ -d "$GEM_DIR" ]]; then
+        export PATH=$GEM_DIR:$PATH
+      fi
+    fi
+  #}}}
+  # CHRUBY {{{
+    if [[ -f "/usr/share/chruby/chruby.sh" ]]; then
+      source /usr/share/chruby/chruby.sh
+    fi
+  #}}}
+  # ANDROID SDK {{{
+    if [[ -d "/opt/android-sdk" ]]; then
+      export ANDROID_HOME=/opt/android-sdk
+    fi
+  #}}}
+  # CHROME {{{
+    if which google-chrome-stable &>/dev/null; then
+      export CHROME_BIN=/usr/bin/google-chrome-stable
+    fi
+  #}}}
+  # EDITOR {{{
     if which vim &>/dev/null; then
       export EDITOR="vim"
     elif which emacs &>/dev/null; then
@@ -89,14 +102,14 @@ _isroot=false
       export EDITOR="nano"
     fi
   #}}}
-  ## BASH HISTORY #{{{
+  # BASH HISTORY {{{
     # make multiple shells share the same history file
     export HISTSIZE=1000            # bash history will save N commands
     export HISTFILESIZE=${HISTSIZE} # bash will remember N commands
     export HISTCONTROL=ignoreboth   # ingore duplicates and spaces
     export HISTIGNORE='&:ls:ll:la:cd:exit:clear:history'
   #}}}
-  ## COLORED MANUAL PAGES #{{{
+  # COLORED MANUAL PAGES {{{
     # @see http://www.tuxarena.com/?p=508
     # For colourful man pages (CLUG-Wiki style)
     if $_isxrunning; then
@@ -111,7 +124,7 @@ _isroot=false
     fi
   #}}}
 #}}}
-## ALIAS {{{
+# ALIAS {{{
   alias freemem='sudo /sbin/sysctl -w vm.drop_caches=3'
   alias enter_matrix='echo -e "\e[32m"; while :; do for i in {1..16}; do r="$(($RANDOM % 2))"; if [[ $(($RANDOM % 5)) == 1 ]]; then if [[ $(($RANDOM % 4)) == 1 ]]; then v+="\e[1m $r   "; else v+="\e[2m $r   "; fi; else v+="     "; fi; done; echo -e "$v"; v=""; done'
   # GIT_OR_HUB {{{
@@ -185,7 +198,7 @@ _isroot=false
     alias lm='la | less'
   #}}}
 #}}}
-## FUNCTIONS {{{
+# FUNCTIONS {{{
   # BETTER GIT COMMANDS {{{
     bit() {
       # By helmuthdu
@@ -230,7 +243,7 @@ _isroot=false
           git config --global format.signoff true
           git config --global alias.reset 'reset --soft HEAD^'
           git config --global alias.graph 'log --graph --oneline --decorate'
-          git config --global alias.compare 'difftool -y HEAD^ HEAD'
+          git config --global alias.compare 'difftool --dir-diff HEAD^ HEAD'
           if which meld &>/dev/null; then
             git config --global diff.guitool meld
             git config --global merge.tool meld
