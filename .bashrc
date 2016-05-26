@@ -78,9 +78,19 @@ _isroot=false
       fi
     fi
   #}}}
+  # NVM {{{
+    if [[ -f "/usr/share/nvm/nvm.sh" ]]; then
+      source /usr/share/nvm/init-nvm.sh
+    fi
+  #}}}
   # CHRUBY {{{
     if [[ -f "/usr/share/chruby/chruby.sh" ]]; then
       source /usr/share/chruby/chruby.sh
+    fi
+  #}}}
+  # VTE {{{
+    if [[ -f "/etc/profile.d/vte.sh" ]]; then
+      . /etc/profile.d/vte.sh
     fi
   #}}}
   # ANDROID SDK {{{
