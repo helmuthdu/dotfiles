@@ -14,12 +14,10 @@ _isroot=false
 [[ $UID -eq 0 ]] && _isroot=true
 # }}}
 # PS1 CONFIG {{{
-  [[ -f $HOME/.dircolors ]] && eval $(dircolors -b $HOME/.dircolors)
+  export TERM='xterm-256color'
+
   if $_isxrunning; then
-
     [[ -f $HOME/.dircolors_256 ]] && eval $(dircolors -b $HOME/.dircolors_256)
-
-    export TERM='xterm-256color'
 
      B='\[\e[1;38;5;33m\]'
     LB='\[\e[1;38;5;81m\]'
@@ -48,7 +46,7 @@ _isroot=false
       export PS1="$GY[$Y\u$GY@$P\h$GY:$B\W$GY]$W\$(get_prompt_symbol) "
     fi
   else
-    export TERM='xterm-color'
+    [[ -f $HOME/.dircolors ]] && eval $(dircolors -b $HOME/.dircolors)
   fi
 #}}}
 # BASH OPTIONS {{{
@@ -89,8 +87,8 @@ _isroot=false
     fi
   #}}}
   # VTE {{{
-    if [[ -f "/etc/profile.d/vte.sh" ]]; then
-      . /etc/profile.d/vte.sh
+    if [[ $TERMINIX_ID ]]; then
+      source /etc/profile.d/vte.sh
     fi
   #}}}
   # ANDROID SDK {{{
