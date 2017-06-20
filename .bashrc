@@ -232,7 +232,7 @@ _isroot=false
           local USER=`git config --global github.user`
           local EDITOR=`git config --global core.editor`
 
-          [[ -z $NAME ]] && read -p "Nome: " NAME
+          [[ -z $NAME ]] && read -p "Name: " NAME
           [[ -z $EMAIL ]] && read -p "Email: " EMAIL
           [[ -z $USER ]] && read -p "Username: " USER
           [[ -z $EDITOR ]] && read -p "Editor: " EDITOR
