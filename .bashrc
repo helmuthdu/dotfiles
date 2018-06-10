@@ -70,7 +70,7 @@ _isroot=false
   fi
   # RUBY {{{
     if which ruby &>/dev/null; then
-      GEM_DIR=$(ruby -rubygems -e 'puts Gem.user_dir')/bin
+      GEM_DIR=$(ruby -r rubygems -e 'puts Gem.user_dir')/bin
       if [[ -d "$GEM_DIR" ]]; then
         export PATH=$GEM_DIR:$PATH
       fi
