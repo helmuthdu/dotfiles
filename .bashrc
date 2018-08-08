@@ -116,6 +116,7 @@ _isroot=false
     export HISTFILESIZE=${HISTSIZE} # bash will remember N commands
     export HISTCONTROL=ignoreboth   # ingore duplicates and spaces
     export HISTIGNORE='&:ls:ll:la:cd:exit:clear:history'
+    export HISTTIMEFORMAT="%d/%m/%y %T "
   #}}}
   # COLORED MANUAL PAGES {{{
     # @see http://www.tuxarena.com/?p=508
